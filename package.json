@@ -1,0 +1,51 @@
+{
+  "name": "@ngx-grpc/protoc-gen-ng",
+  "version": "0.1.0",
+  "author": "smnbbrv",
+  "license": "MIT",
+  "description": "",
+  "main": "./dist/main.js",
+  "bin": {
+    "protoc-gen-ng": "./dist/main.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "scripts": {
+    "start": "nodemon --watch src --watch test/proto -e ts,proto --exec 'npm run build && npm run test:generate && echo \"Done\"'",
+    "build": "tsc -p tsconfig.build.json && chmod +x dist/main.js",
+    "lint": "eslint src/**/*.ts",
+    "test": "jest --watch",
+    "test:ci": "jest",
+    "test:generate": "rimraf ./test/out/* && protoc --plugin=protoc-gen-ng=$(pwd)/dist/main.js --ng_out=./test/out -I $(pwd)/test/proto $(pwd)/test/proto/*",
+    "test:generate-grpc-web": "rimraf ./test/out-grpc-web/* && protoc -I=$(pwd)/test/proto $(pwd)/test/proto/* --js_out=import_style=commonjs:$(pwd)/test/out-grpc-web --grpc-web_out=import_style=typescript,mode=grpcwebtext:$(pwd)/test/out-grpc-web",
+    "test:coverage": "jest --coverage"
+  },
+  "devDependencies": {
+    "@angular/core": "^8.2.13",
+    "@types/google-protobuf": "^3.7.2",
+    "@types/jasmine": "^3.4.6",
+    "@types/jest": "^24.0.22",
+    "@types/node": "^12.12.6",
+    "@types/prettier": "^1.18.3",
+    "@typescript-eslint/eslint-plugin": "^2.6.1",
+    "@typescript-eslint/parser": "^2.6.1",
+    "acorn": "^6.3.0",
+    "eslint": "^6.6.0",
+    "eslint-plugin-deprecate": "^0.7.0",
+    "google-protobuf": "^3.10.0",
+    "grpc-web": "^1.0.6",
+    "jest": "^24.9.0",
+    "nodemon": "^1.19.4",
+    "rimraf": "^3.0.0",
+    "rxjs": "^6.5.3",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "prettier": "1.19.1",
+    "protoc-plugin": "0.0.6"
+  }
+}
