@@ -1,3 +1,4 @@
+import { GrpcHandler } from '@ngx-grpc/core';
 import 'jest';
 import * as deprecated from '../out/deprecated.pb';
 
@@ -11,8 +12,8 @@ describe('no-package.proto', () => {
 
   it('should produce TestServiceClient', () => {
     expect(deprecated.TestServiceClient).toBeTruthy();
-    expect(new deprecated.TestServiceClient({ host: 'test' })).toBeTruthy();
-    expect(new deprecated.TestServiceClient({ host: 'test' }).test).toBeTruthy();
+    expect(new deprecated.TestServiceClient({ host: 'test' }, new GrpcHandler([]))).toBeTruthy();
+    expect(new deprecated.TestServiceClient({ host: 'test' }, new GrpcHandler([])).test).toBeTruthy();
   });
 
 });

@@ -13,6 +13,10 @@
     "README.md",
     "LICENSE.md"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngx-grpc/protoc-gen-ng"
+  },
   "scripts": {
     "start": "nodemon --watch src --watch test/proto -e ts,proto --exec 'npm run build && npm run test:generate && echo \"Done\"'",
     "build": "tsc -p tsconfig.build.json && chmod +x dist/main.js",
@@ -21,10 +25,12 @@
     "test:ci": "jest",
     "test:generate": "rimraf ./test/out/* && protoc --plugin=protoc-gen-ng=$(pwd)/dist/main.js --ng_out=./test/out -I $(pwd)/test/proto $(pwd)/test/proto/*",
     "test:generate-grpc-web": "rimraf ./test/out-grpc-web/* && protoc -I=$(pwd)/test/proto $(pwd)/test/proto/* --js_out=import_style=commonjs:$(pwd)/test/out-grpc-web --grpc-web_out=import_style=typescript,mode=grpcwebtext:$(pwd)/test/out-grpc-web",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "preversion": "npm run build && npm run test:generate && npm run test:ci"
   },
   "devDependencies": {
     "@angular/core": "^8.2.13",
+    "@ngx-grpc/core": "0.0.1",
     "@types/google-protobuf": "^3.7.2",
     "@types/jasmine": "^3.4.6",
     "@types/jest": "^24.0.22",

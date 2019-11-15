@@ -1,3 +1,4 @@
+import { GrpcHandler } from '@ngx-grpc/core';
 import 'jest';
 import * as noPackage from '../out/no-package.pb';
 
@@ -19,7 +20,7 @@ describe('no-package.proto', () => {
 
   it('should produce TestServiceClient', () => {
     expect(noPackage.TestServiceClient).toBeTruthy();
-    expect(new noPackage.TestServiceClient({ host: 'test' })).toBeTruthy();
+    expect(new noPackage.TestServiceClient({ host: 'test' }, new GrpcHandler([]))).toBeTruthy();
   });
 
   // it('should produce NoPackageServiceClientsModule', () => {
