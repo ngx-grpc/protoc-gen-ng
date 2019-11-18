@@ -23,9 +23,4 @@ describe('no-package.proto', () => {
     expect(new noPackage.TestServiceClient({ host: 'test' }, new GrpcHandler([]))).toBeTruthy();
   });
 
-  // it('should produce NoPackageServiceClientsModule', () => {
-  //   expect(noPackage.NoPackageServiceClientsModule).toBeTruthy();
-  //   expect(noPackage.NoPackageServiceClientsModule.configureClients).toBeTruthy();
-  // });
-
 });
