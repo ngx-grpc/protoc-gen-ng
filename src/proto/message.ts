@@ -1,4 +1,4 @@
-import { camelize, extractType } from '../utils';
+import { camelize } from '../utils';
 import { Enum } from './enum';
 import { JSDoc } from './js-doc';
 import { Proto } from './proto';
@@ -89,9 +89,9 @@ export class Message {
 
   isFieldMap(field: MessageField) {
     if (field.type === MessageFieldType.message) {
-      const msg = this.proto.findMessage(field.typeName) as Message;
+      const msg = this.proto.resolveTypeMetadata(field.typeName).message;
 
-      if (msg.options.mapEntry) {
+      if (msg && msg.options.mapEntry) {
         return true;
       }
     }
@@ -100,7 +100,7 @@ export class Message {
   }
 
   getMapKeyValueFields(field: MessageField) {
-    const msg = this.proto.findMessage(field.typeName) as Message;
+    const msg = this.proto.resolveTypeMetadata(field.typeName).message as Message;
     const key = msg.fieldList.find(f => f.name === 'key') as MessageField;
     const value = msg.fieldList.find(f => f.name === 'value') as MessageField;
 
@@ -124,7 +124,7 @@ export class Message {
       const suffix = field.label === MessageFieldCardinality.repeated ? '[]' : '';
 
       if (field.type === MessageFieldType.enum || field.type === MessageFieldType.message) {
-        return extractType(field.typeName, this.proto.pb_package) + suffix;
+        return this.proto.getRelativeTypeName(field.typeName) + suffix;
       }
 
       return FieldTypesConfig[field.type].type + suffix;
@@ -136,7 +136,7 @@ export class Message {
       const repeated = field.label === MessageFieldCardinality.repeated ? 'Repeated' : '';
 
       if (field.type === MessageFieldType.message) {
-        const subType = extractType(field.typeName, this.proto.pb_package);
+        const subType = this.proto.getRelativeTypeName(field.typeName);
 
         if (this.isFieldMap(field)) {
           const [key] = this.getMapKeyValueFields(field);
@@ -172,7 +172,7 @@ export class Message {
       const config = FieldTypesConfig[field.type];
 
       if (field.type === MessageFieldType.message) {
-        const subType = extractType(field.typeName, this.proto.pb_package);
+        const subType = this.proto.getRelativeTypeName(field.typeName);
 
         if (this.isFieldMap(field)) {
           const msgVarName = `msg_${field.number}`;

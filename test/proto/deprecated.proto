@@ -2,12 +2,8 @@ syntax = "proto3";
 
 package test.deprecated;
 
-message TestMessage {
-  string message = 1 [deprecated = true];
-}
+message TestMessage { string message = 1 [ deprecated = true ]; }
 
 service TestService {
-  rpc test(TestMessage) returns (TestMessage) {
-    option deprecated = true;
-  };
+  rpc test(TestMessage) returns (TestMessage) { option deprecated = true; };
 }

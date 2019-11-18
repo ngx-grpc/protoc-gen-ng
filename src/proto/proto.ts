@@ -1,64 +1,123 @@
-import { basename } from 'path';
-import { extractType } from '../utils';
+import { Logger } from '../logger';
+import { dasherize } from '../utils';
 import { Enum } from './enum';
 import { Message } from './message';
 import { Service } from './service';
+
+export interface MessageIndexMeta {
+  proto: Proto;
+  message?: Message;
+  enum?: Enum;
+}
 
 export class Proto {
 
   name: string;
   pb_package: string;
-  dependencyList: [];
-  publicDependencyList: [];
+  dependencyList: string[];
+  publicDependencyList: number[];
   weakDependencyList: [];
   messageTypeList: Message[];
   enumTypeList: Enum[];
   serviceList: Service[];
   extensionList: any[];
 
+  resolved: {
+    dependencies: Proto[];
+    publicDependencies: Proto[];
+    weakDependencies: Proto[];
+  } = {} as any;
+
+  messageIndex = new Map<string, MessageIndexMeta>();
+
   constructor(value: Proto) {
     this.name = value.name;
     this.pb_package = value.pb_package; // eslint-disable-line @typescript-eslint/camelcase
-    this.dependencyList = value.dependencyList;
+    this.dependencyList = value.dependencyList || [];
     this.publicDependencyList = value.publicDependencyList;
     this.weakDependencyList = value.weakDependencyList;
     this.messageTypeList = value.messageTypeList.map(e => new Message(e, this));
     this.enumTypeList = value.enumTypeList.map(e => new Enum(e));
     this.serviceList = value.serviceList.map(e => new Service(e, this));
     this.extensionList = value.extensionList;
+
+    this.index();
   }
 
-  findMessage(typeName: string) {
-    const path = extractType(typeName, this.pb_package).split('.');
-    let array = this.messageTypeList;
-    let msg: Message;
-    let i = 0;
+  private index() {
+    const indexEnums = (path: string, enums: Enum[]) => {
+      enums.forEach(oneEnum => {
+        this.messageIndex.set(path + '.' + oneEnum.name, { proto: this, enum: oneEnum });
+      });
+    };
 
-    while (i < 100) {
-      const name = path.shift();
+    const indexMessages = (path: string, submessages: Message[]) => {
+      submessages.forEach(message => {
+        const fullname = path + '.' + message.name;
 
-      if (!name || !array.length) {
-        throw new Error('Error finding ' + typeName);
-      }
+        this.messageIndex.set(fullname, {
+          proto: this,
+          message,
+        });
 
-      msg = array.find(mt => mt.name === name) as Message;
+        indexMessages(fullname, message.nestedTypeList);
+        indexEnums(fullname, message.enumTypeList);
+      });
+    };
 
-      if (!msg) {
-        throw new Error('Error finding ' + typeName);
-      }
+    indexMessages(this.pb_package ? '.' + this.pb_package : '', this.messageTypeList);
+    indexEnums(this.pb_package ? '.' + this.pb_package : '', this.enumTypeList);
+  }
 
-      array = msg.nestedTypeList;
+  resolveTypeMetadata(pbType: string) {
+    let meta = this.messageIndex.get(pbType);
 
-      if (!path.length) {
-        return msg;
-      }
-
-      i++;
+    if (meta) {
+      return meta;
     }
+
+    meta = undefined;
+
+    this.resolved.dependencies.forEach(proto => {
+      if (!meta) {
+        try {
+          meta = proto.resolveTypeMetadata(pbType);
+        } catch (ex) {
+        }
+      }
+    });
+
+    if (meta) {
+      return meta;
+    }
+
+    Logger.debug(`Cannot find type ${pbType} in proto ${this.name}`);
+    throw new Error('Error finding ' + pbType);
   }
 
-  getFlatName() {
-    return basename(this.name).replace(/\.proto$/, '');
+  getDependencyPackageName(proto: Proto) {
+    return proto.pb_package ? proto.pb_package.replace(/\.([a-z])/g, v => v.toUpperCase()).replace(/\./g, '') : ('noPackage' + this.resolved.dependencies.indexOf(proto));
+  }
+
+  getRelativeTypeName(pbType: string) {
+    const meta = this.resolveTypeMetadata(pbType);
+    const [, , /* packageName */, typeName] = pbType.match(/^\.(([a-z0-9.]*)\.)?([A-Za-z0-9.]+$)/) as RegExpMatchArray;
+
+    if (meta.proto === this) {
+      return typeName;
+    }
+
+    return this.getDependencyPackageName(meta.proto) + '.' + typeName;
+  }
+
+  getImportedDependencies() {
+    const root = Array(this.name.split('/').length - 1).fill('..').join('/');
+
+    return this.resolved.dependencies.map(pp => `import * as ${this.getDependencyPackageName(pp)} from '${root || '.'}/${pp.getGeneratedFileBaseName()}';`).join('\n');
+  }
+
+  getGeneratedFileBaseName() {
+    return `${dasherize(this.name.replace(/\.proto$/, ''))}.pb`;
   }
 
 }

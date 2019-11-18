@@ -1,4 +1,4 @@
-import { camelize, extractType, pascalize } from '../utils';
+import { camelize, pascalize } from '../utils';
 import { JSDoc } from './js-doc';
 import { Proto } from './proto';
 
@@ -39,8 +39,8 @@ export class Service {
     const serviceUrlPrefix = this.proto.pb_package ? this.proto.pb_package + '.' : '';
 
     const methods = this.methodList.map(method => {
-      const inputType = extractType(method.inputType, this.proto.pb_package);
-      const outputType = extractType(method.outputType, this.proto.pb_package);
+      const inputType = this.proto.getRelativeTypeName(method.inputType);
+      const outputType = this.proto.getRelativeTypeName(method.outputType);
       const jsdoc = new JSDoc();
 
       jsdoc.setDescription(`${method.serverStreaming ? 'Server streaming' : 'Unary'} RPC`);
@@ -60,7 +60,7 @@ export class Service {
             requestMetadata,
             requestClass: ${inputType},
             responseClass: ${outputType},
-          }) as Observable<${outputType}${method.serverStreaming ? ` | Status` : ''}>;
+          }) as Observable<${outputType}${method.serverStreaming ? ' | Status' : ''}>;
         }
       `;
     });

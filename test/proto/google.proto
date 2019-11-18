@@ -1,11 +1,12 @@
-// taken from https://github.com/protocolbuffers/protobuf/blob/master/js/test.proto
+// taken from
+// https://github.com/protocolbuffers/protobuf/blob/master/js/test.proto
 
 syntax = "proto2";
 
 option java_package = "com.google.apps.jspb.proto";
 option java_multiple_files = true;
 
-import "google/protobuf/descriptor.proto";
+// import "google/protobuf/descriptor.proto";
 
 package jspb.test;
 
@@ -16,9 +17,7 @@ enum OuterEnum {
   BAR = 2;
 }
 
-message EnumContainer {
-  optional OuterEnum outer_enum = 1;
-}
+message EnumContainer { optional OuterEnum outer_enum = 1; }
 
 message Simple1 {
   required string a_string = 1;
@@ -41,9 +40,7 @@ message SpecialCases {
 }
 
 message OptionalFields {
-  message Nested {
-    optional int32 an_int = 1;
-  }
+  message Nested { optional int32 an_int = 1; }
   optional string a_string = 1;
   required bool a_bool = 2;
   optional Nested a_nested_message = 3;
@@ -59,9 +56,7 @@ message HasExtensions {
 }
 
 message Complex {
-  message Nested {
-    required int32 an_int = 2;
-  }
+  message Nested { required int32 an_int = 2; }
   required string a_string = 1;
   optional bool an_out_of_order_bool = 9;
   optional Nested a_nested_message = 4;
@@ -72,9 +67,7 @@ message Complex {
 
 message OuterMessage {
   // Make sure this doesn't conflict with the other Complex message.
-  message Complex {
-    optional int32 inner_complex_field = 1;
-  }
+  message Complex { optional int32 inner_complex_field = 1; }
 }
 
 message MineField {
@@ -85,15 +78,13 @@ message MineField {
 }
 
 message IsExtension {
-  extend HasExtensions {
-    optional IsExtension ext_field = 100;
-  }
+  extend HasExtensions { optional IsExtension ext_field = 100; }
   optional string ext1 = 1;
 
   // Extensions of proto2 Descriptor messages will be ignored.
-  extend google.protobuf.EnumOptions {
-    optional string simple_option = 42113038;
-  }
+  // extend google.protobuf.EnumOptions {
+  //   optional string simple_option = 42113038;
+  // }
 }
 
 message IndirectExtension {
@@ -105,40 +96,38 @@ message IndirectExtension {
   }
 }
 
-extend HasExtensions {
-  optional Simple1 simple1 = 105;
-}
+extend HasExtensions { optional Simple1 simple1 = 105; }
 
 message DefaultValues {
   enum Enum {
     E1 = 13;
     E2 = 77;
   }
-  optional string string_field = 1 [default = "default<>\'\"abc"];
-  optional bool bool_field = 2 [default = true];
-  optional int64 int_field = 3 [default = 11];
-  optional Enum enum_field = 4 [default = E1];
-  optional string empty_field = 6 [default = ""];
+  optional string string_field = 1 [ default = "default<>\'\"abc" ];
+  optional bool bool_field = 2 [ default = true ];
+  optional int64 int_field = 3 [ default = 11 ];
+  optional Enum enum_field = 4 [ default = E1 ];
+  optional string empty_field = 6 [ default = "" ];
   optional bytes bytes_field = 8
-      [default = "moo"];  // Base64 encoding is "bW9v"
+      [ default = "moo" ]; // Base64 encoding is "bW9v"
 }
 
 message FloatingPointFields {
   optional float optional_float_field = 1;
   required float required_float_field = 2;
   repeated float repeated_float_field = 3;
-  optional float default_float_field = 4 [default = 2.0];
+  optional float default_float_field = 4 [ default = 2.0 ];
   optional double optional_double_field = 5;
   required double required_double_field = 6;
   repeated double repeated_double_field = 7;
-  optional double default_double_field = 8 [default = 2.0];
+  optional double default_double_field = 8 [ default = 2.0 ];
 }
 
 message BooleanFields {
   optional bool optional_boolean_field = 1;
   required bool required_boolean_field = 2;
   repeated bool repeated_boolean_field = 3;
-  optional bool default_boolean_field = 4 [default = true];
+  optional bool default_boolean_field = 4 [ default = true ];
 }
 
 message TestClone {
@@ -151,16 +140,12 @@ message TestClone {
 }
 
 message TestCloneExtension {
-  extend TestClone {
-    optional TestCloneExtension low_ext = 11;
-  }
+  extend TestClone { optional TestCloneExtension low_ext = 11; }
   optional int32 f = 1;
 }
 
 message CloneExtension {
-  extend TestClone {
-    optional CloneExtension ext_field = 100;
-  }
+  extend TestClone { optional CloneExtension ext_field = 100; }
   optional string ext = 2;
 }
 
@@ -190,9 +175,7 @@ message TestReservedNames {
 }
 
 message TestReservedNamesExtension {
-  extend TestReservedNames {
-    optional int32 foo = 10;
-  }
+  extend TestReservedNames { optional int32 foo = 10; }
 }
 
 message TestMessageWithOneof {
@@ -211,13 +194,13 @@ message TestMessageWithOneof {
   repeated string repeated_field = 9;
 
   oneof default_oneof_a {
-    int32 aone = 10 [default = 1234];
+    int32 aone = 10 [ default = 1234 ];
     int32 atwo = 11;
   }
 
   oneof default_oneof_b {
     int32 bone = 12;
-    int32 btwo = 13 [default = 1234];
+    int32 btwo = 13 [ default = 1234 ];
   }
 }
 
@@ -237,12 +220,10 @@ extend TestLastFieldBeforePivot {
   optional int32 extend_test_last_field_before_pivot_field = 101;
 }
 
-
 message Int64Types {
-  optional int64 int64_normal = 1 [jstype = JS_NORMAL];
-  optional sint64 int64_string = 2 [jstype = JS_STRING];
-  optional uint64 int64_number = 3 [jstype = JS_NUMBER];
-
+  optional int64 int64_normal = 1 [ jstype = JS_NORMAL ];
+  optional sint64 int64_string = 2 [ jstype = JS_STRING ];
+  optional uint64 int64_number = 3 [ jstype = JS_NUMBER ];
 }
 
 message TestMapFieldsNoBinary {
@@ -268,19 +249,13 @@ enum MapValueEnumNoBinary {
   MAP_VALUE_BAZ_NOBINARY = 2;
 }
 
-message MapValueMessageNoBinary {
-  optional int32 foo = 1;
-}
+message MapValueMessageNoBinary { optional int32 foo = 1; }
 
 message Deeply {
   message Nested {
-    message Message {
-      optional int32 count = 1;
-    }
+    message Message { optional int32 count = 1; }
   }
 }
-
-
 
 enum TestAllowAliasEnum {
   option allow_alias = true;

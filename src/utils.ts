@@ -40,15 +40,3 @@ export function pascalize(str: string) {
     .replace(STRING_UNDERSCORE_REGEXP_2, '_')
     .toUpperCase();
 }
-
-export function extractType(originalType: string, packageName: string) {
-  const packageRef = '.' + packageName + '.';
-  const type = originalType.replace(new RegExp('^' + packageRef.replace(/\./g, '\\.')), '');
-
-  // a deeper package reference is here
-  if (type[0].toLowerCase() === type[0]) {
-    return originalType.replace(/^\./, ''); // still replace "dot" in the beginning
-  }
-
-  return type; // type without package prefix
-}

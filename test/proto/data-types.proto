@@ -8,13 +8,9 @@ enum TestEnum {
   value2 = 2;
 }
 
-message TestSubMessage {
-  string string = 1;
-}
+message TestSubMessage { string string = 1; }
 
-message TestTreeItemMessage {
-  TestSubMessage sub = 1;
-}
+message TestTreeItemMessage { TestSubMessage sub = 1; }
 
 message TestMessage {
   string string = 1;

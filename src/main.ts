@@ -5,8 +5,8 @@ import { join } from 'path';
 import * as prettier from 'prettier';
 import protocPlugin from 'protoc-plugin';
 import { Config } from './config';
+import { Logger } from './logger';
 import { Proto } from './proto/proto';
-import { dasherize } from './utils';
 
 function main() {
   protocPlugin((protosProtocPlugin: Proto[]) => {
@@ -17,6 +17,24 @@ function main() {
       writeFileSync(join('debug', 'parsed-protoc-plugin.json'), JSON.stringify(protosProtocPlugin, null, 2), 'utf-8');
       writeFileSync(join('debug', 'parsed-protoc-gen-ng.json'), JSON.stringify(protos, null, 2), 'utf-8');
     }
+
+    protos.forEach(p => {
+      p.resolved.dependencies = p.dependencyList.map(d => protos.find(pp => pp.name === d) as Proto);
+      p.resolved.publicDependencies = p.publicDependencyList.map(i => p.resolved.dependencies[i]);
+    });
+
+    // TODO add cascade public import. Currently works with one-level only
+    protos
+      .filter(p => p.resolved.publicDependencies.length)
+      .forEach(protoWithPublicImport =>
+        protos
+          .filter(pp => pp.resolved.dependencies.includes(protoWithPublicImport))
+          .forEach(protoImportingProtoWithPublicImport => {
+            Logger.debug(`${protoImportingProtoWithPublicImport.name} reimports ${protoWithPublicImport.resolved.publicDependencies.map(p => p.name).join(', ')} via ${protoWithPublicImport.name}`);
+
+            protoImportingProtoWithPublicImport.resolved.dependencies.push(...protoWithPublicImport.resolved.publicDependencies)
+          })
+      );
 
     return protos.map(proto => {
       const types = [
@@ -50,12 +68,13 @@ ${ proto.serviceList.map(s => `      { provide: ${s.getConfigInjectionTokenName(
       import { BinaryReader, BinaryWriter, ByteSource } from 'google-protobuf';
       import { AbstractClientBase, Error, GrpcWebClientBase, Metadata, Status } from 'grpc-web';
       import { Observable } from 'rxjs';
+      ${proto.getImportedDependencies()}
 
       ${types.map(t => t.toString()).join('\n\n')}
 `;
 
       return {
-        name: `${dasherize(proto.getFlatName())}.pb.ts`,
+        name: proto.getGeneratedFileBaseName() + '.ts',
         content: prettier.format(generated, { parser: 'typescript', singleQuote: true }),
       };
     });

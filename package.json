@@ -23,8 +23,8 @@
     "lint": "eslint src/**/*.ts",
     "test": "jest --watch",
     "test:ci": "jest",
-    "test:generate": "rimraf ./test/out/* && protoc --plugin=protoc-gen-ng=$(pwd)/dist/main.js --ng_out=./test/out -I $(pwd)/test/proto $(pwd)/test/proto/*",
-    "test:generate-grpc-web": "rimraf ./test/out-grpc-web/* && protoc -I=$(pwd)/test/proto $(pwd)/test/proto/* --js_out=import_style=commonjs:$(pwd)/test/out-grpc-web --grpc-web_out=import_style=typescript,mode=grpcwebtext:$(pwd)/test/out-grpc-web",
+    "test:generate": "rimraf ./test/out/* && protoc --plugin=protoc-gen-ng=$(pwd)/dist/main.js --ng_out=./test/out -I test/proto $(find test/proto -iname \"*.proto\")",
+    "test:generate-grpc-web": "rimraf ./test/out-grpc-web/* --js_out=import_style=commonjs:$(pwd)/test/out-grpc-web --grpc-web_out=import_style=typescript,mode=grpcwebtext:$(pwd)/test/out-grpc-web  && protoc -I=test/proto $(find test/proto -iname \"*.proto\")",
     "test:coverage": "jest --coverage",
     "preversion": "npm run build && npm run test:generate && npm run test:ci"
   },
@@ -52,6 +52,7 @@
   },
   "dependencies": {
     "prettier": "1.19.1",
-    "protoc-plugin": "0.0.6"
+    "protoc-plugin": "0.0.6",
+    "winston": "^3.2.1"
   }
 }
