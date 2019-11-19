@@ -21,16 +21,21 @@
     "start": "nodemon --watch src --watch test/proto -e ts,proto --exec 'npm run build && npm run test:generate && echo \"Done\"'",
     "build": "tsc -p tsconfig.build.json && chmod +x dist/main.js",
     "lint": "eslint src/**/*.ts",
-    "test": "jest --watch",
-    "test:ci": "jest",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "test:generate": "rimraf ./test/out/* && protoc --plugin=protoc-gen-ng=$(pwd)/dist/main.js --ng_out=./test/out -I test/proto $(find test/proto -iname \"*.proto\")",
     "test:generate-grpc-web": "rimraf ./test/out-grpc-web/* --js_out=import_style=commonjs:$(pwd)/test/out-grpc-web --grpc-web_out=import_style=typescript,mode=grpcwebtext:$(pwd)/test/out-grpc-web  && protoc -I=test/proto $(find test/proto -iname \"*.proto\")",
-    "test:coverage": "jest --coverage",
-    "preversion": "npm run build && npm run test:generate && npm run test:ci"
+    "release": "semantic-release"
   },
   "devDependencies": {
     "@angular/core": "^8.2.13",
     "@ngx-grpc/core": "0.0.1",
+    "@semantic-release/changelog": "^3.0.5",
+    "@semantic-release/commit-analyzer": "^6.3.3",
+    "@semantic-release/git": "^7.0.18",
+    "@semantic-release/npm": "^5.3.4",
+    "@semantic-release/release-notes-generator": "^7.3.3",
     "@types/google-protobuf": "^3.7.2",
     "@types/jasmine": "^3.4.6",
     "@types/jest": "^24.0.22",
@@ -47,6 +52,7 @@
     "nodemon": "^1.19.4",
     "rimraf": "^3.0.0",
     "rxjs": "^6.5.3",
+    "semantic-release": "^15.13.31",
     "ts-jest": "^24.1.0",
     "typescript": "^3.7.2"
   },
