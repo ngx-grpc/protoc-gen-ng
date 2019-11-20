@@ -1,3 +1,11 @@
+## [0.2.2](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.2.1...v0.2.2) (2019-11-20)
+
+
+### Bug Fixes
+
+* do not transform the RPC path to camelcase, fix [#1](https://github.com/ngx-grpc/protoc-gen-ng/issues/1) ([4cc306d](https://github.com/ngx-grpc/protoc-gen-ng/commit/4cc306dc4182ca47488b116ce585cc8992547a00))
+* use strict Uint8Array for bytes ([c526e0a](https://github.com/ngx-grpc/protoc-gen-ng/commit/c526e0ae6b5fd74d645eaa8764f8c15cbf7c238d))
+
 ## [0.2.1](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.2.0...v0.2.1) (2019-11-20)
 
 
