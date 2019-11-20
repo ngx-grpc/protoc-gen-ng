@@ -55,7 +55,7 @@ export class Service {
           return this.handler.handle({
             type: GrpcCallType.${method.serverStreaming ? 'serverStream' : 'unary'},
             client: this.client,
-            path: '/${serviceUrlPrefix}${this.name}/${camelize(method.name)}',
+            path: '/${serviceUrlPrefix}${this.name}/${method.name}',
             requestData,
             requestMetadata,
             requestClass: ${inputType},
