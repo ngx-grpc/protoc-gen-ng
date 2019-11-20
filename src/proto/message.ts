@@ -188,10 +188,23 @@ export class Message {
         }
 
         if (field.label === MessageFieldCardinality.repeated) {
-          return `case ${field.number}: (instance.${processName(field.name)} = instance.${processName(field.name)} || []).push(new ${subType}()); reader.readMessage(instance.${processName(field.name)}, ${subType}.fromBinaryReader); break;`;
+          const varName = `messageInitializer${field.number}`;
+
+          return `
+            case ${field.number}:
+              const ${varName} = new ${subType}();
+              reader.readMessage(${varName}, ${subType}.fromBinaryReader);
+              (instance.${processName(field.name)} = instance.${processName(field.name)} || []).push(${varName});
+              break;
+          `;
         }
 
-        return `case ${field.number}: instance.${processName(field.name)} = new ${subType}(); reader.readMessage(instance.${processName(field.name)}, ${subType}.fromBinaryReader); break;`;
+        return `
+          case ${field.number}:
+            instance.${processName(field.name)} = new ${subType}();
+            reader.readMessage(instance.${processName(field.name)}, ${subType}.fromBinaryReader);
+            break;
+        `;
       }
 
       if (field.label === MessageFieldCardinality.repeated) {
