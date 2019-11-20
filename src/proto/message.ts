@@ -8,7 +8,7 @@ interface FieldTypeConfig { type?: string; read: string; write: string; defaultE
 
 const FieldTypesConfig: { [prop in MessageFieldType]?: FieldTypeConfig } = {
   [MessageFieldType.bool]: { type: 'boolean', read: 'Bool', write: 'Bool', defaultExpression: 'false' },
-  [MessageFieldType.bytes]: { type: 'ByteSource', read: 'Bytes', write: 'Bytes', defaultExpression: '\'\'' },
+  [MessageFieldType.bytes]: { type: 'Uint8Array', read: 'Bytes', write: 'Bytes', defaultExpression: 'new Uint8Array()' },
   [MessageFieldType.double]: { type: 'number', read: 'Double', write: 'Double', defaultExpression: '0' },
   [MessageFieldType.enum]: { read: 'Enum', write: 'Enum', defaultExpression: '0' },
   [MessageFieldType.fixed32]: { type: 'number', read: 'Fixed32', write: 'Fixed32', defaultExpression: '0' },
