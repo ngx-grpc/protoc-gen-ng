@@ -1,3 +1,10 @@
+## [0.2.3](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.2.2...v0.2.3) (2019-11-25)
+
+
+### Features
+
+* add oneOf support ([11024e3](https://github.com/ngx-grpc/protoc-gen-ng/commit/11024e3221c586c54776d270a21186664a1959cc))
+
 ## [0.2.2](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.2.1...v0.2.2) (2019-11-20)
 
 
