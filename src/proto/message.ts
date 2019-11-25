@@ -1,6 +1,5 @@
-import { camelize } from '../utils';
+import { camelize, classify } from '../utils';
 import { Enum } from './enum';
-import { JSDoc } from './js-doc';
 import { Proto } from './proto';
 import { MessageFieldCardinality, MessageFieldType } from './types';
 
@@ -35,6 +34,7 @@ export class MessageField {
   type: number;
   typeName: string;
   jsonName: string;
+  oneofIndex?: number;
   options: {
     ctype: number;
     deprecated: boolean;
@@ -51,6 +51,7 @@ export class MessageField {
     this.type = value.type;
     this.typeName = value.typeName;
     this.jsonName = value.jsonName;
+    this.oneofIndex = value.oneofIndex;
     this.options = value.options || {};
   }
 }
@@ -63,7 +64,7 @@ export class Message {
   nestedTypeList: Message[];
   enumTypeList: Enum[];
   extensionRangeList: [];
-  oneofDeclList: [];
+  oneofDeclList: { name: string }[];
   reservedRangeList: [];
   reservedNameList: [];
   options: {
@@ -215,27 +216,58 @@ export class Message {
     }
 
     const attributes = this.fieldList.map(f => {
-      const jsdoc = new JSDoc();
-
-      jsdoc.setDescription(`Property ${f.name}`);
-      jsdoc.setDeprecation(f.options.deprecated);
-
-      return `
-        ${jsdoc.toString()}
-        public ${processName(f.name)}?: ${getDataType(f)};
-      `;
+      return `private _${processName(f.name)}?: ${getDataType(f)};`;
     });
+    const attributeGetters = this.fieldList.map(f => {
+      const name = processName(f.name);
+
+      return `get ${name}(): ${getDataType(f)} | undefined { return this._${name} }`;
+    });
+    const attributeSetters = this.fieldList.map(f => {
+      const name = processName(f.name);
+      let oneOf = '';
+
+      if (typeof f.oneofIndex === 'number') {
+        const oneOfName = this.oneofDeclList[f.oneofIndex].name;
+        const otherFields = this.fieldList.filter(ff => ff.oneofIndex === f.oneofIndex && ff.name !== f.name).map(ff => `this._${processName(ff.name)}`);
+
+        oneOf = `if (value !== undefined && value !== null) {
+          ${otherFields.length ? [...otherFields, 'undefined'].join(' = ') : ''}
+          this._${processName(oneOfName)} = ${this.name}.${this.createCaseEnumName(oneOfName)}.${name};
+        }`;
+      }
+
+      return `set ${name}(value: ${getDataType(f)} | undefined) {
+        ${oneOf}
+        this._${name} = value;
+      }`;
+    });
+
+    const oneOfCaseAttrubutes = this.oneofDeclList.map(od => {
+      const type = `${this.name}.${this.createCaseEnumName(od.name)}`;
+
+      return `private _${processName(od.name)}: ${type} = ${type}.none;`;
+    });
+    const oneOfCaseAttributeGetters = this.oneofDeclList.map(od => {
+      return `get ${processName(od.name)}() {
+        return this._${processName(od.name)};
+      }`;
+    });
+
     const attributeInitializers = this.fieldList.map(f => `this.${processName(f.name)} = value.${processName(f.name)}`);
     const serializeAttributes = this.fieldList.map(f => getWriteCall(f));
     const deserializeAttributes = this.fieldList.map(f => getReadCall(f));
-    const afterReadInitializers = this.fieldList.map(f => `instance.${processName(f.name)} = instance.${processName(f.name)} || ${
-      this.isFieldMap(f) ?
-        '{}'
-        : f.label === MessageFieldCardinality.repeated
-          ? '[]'
-          : FieldTypesConfig[f.type]
-            ? FieldTypesConfig[f.type].defaultExpression
-            : 'undefined'}
+
+    const afterReadInitializers = this.fieldList
+      .filter(f => typeof f.oneofIndex !== 'number') // we do not want to add default initializers to oneOf properties cause it against its logic
+      .map(f => `instance.${processName(f.name)} = instance.${processName(f.name)} || ${
+        this.isFieldMap(f) ?
+          '{}'
+          : f.label === MessageFieldCardinality.repeated
+            ? '[]'
+            : FieldTypesConfig[f.type]
+              ? FieldTypesConfig[f.type].defaultExpression
+              : 'undefined'}
     `);
 
     return `export class ${this.name} {
@@ -277,13 +309,32 @@ export class Message {
 
   ${attributes.join('\n')}
 
-  constructor(value: ${this.name} = {}) {
+  ${oneOfCaseAttrubutes.join('\n')}
+
+  constructor(value: Partial<${this.name}> = {}) {
     ${attributeInitializers.join(';')}
   }
+
+  ${attributeGetters.join('\n')}
+  ${attributeSetters.join('\n')}
+
+  ${oneOfCaseAttributeGetters.join('\n')}
 
 }
 
 export module ${this.name} {
+  ${[...this.oneofDeclList.map((od, i) =>
+    new Enum({
+      name: this.createCaseEnumName(od.name),
+      reservedNameList: [],
+      reservedRangeList: [],
+      valueList: [
+        { name: 'none', number: 0 },
+        ...this.fieldList.filter(f => f.oneofIndex === i).map((f, fi) => ({ name: f.name, number: fi + 1 })),
+      ],
+    }).toString(),
+  ),
+  ].join('\n')}
   ${[...this.enumTypeList.map(e => e.toString()), ...this.nestedTypeList.map(m => m.toString())].join('\n\n')}
 }`;
   }
@@ -293,6 +344,10 @@ export module ${this.name} {
       ...this,
       proto: null,
     };
+  }
+
+  private createCaseEnumName(name: string) {
+    return classify(name) + 'Case';
   }
 
 }

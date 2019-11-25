@@ -41,7 +41,7 @@ describe('data-types.proto', () => {
     expect(msg.subMessage).toBe(undefined);
     expect(msg.double).toBe(0);
     expect(msg.float).toBe(0);
-    expect(msg.bytes).toBe('');
+    expect(msg.bytes instanceof Uint8Array && msg.bytes.length === 0).toBeTruthy();
     expect(msg.int64).toBe(0);
     expect(msg.enum).toBe(0);
     expect(msg.fixed32).toBe(0);

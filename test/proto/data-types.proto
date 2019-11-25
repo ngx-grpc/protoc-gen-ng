@@ -13,6 +13,12 @@ message TestSubMessage { string string = 1; }
 message TestTreeItemMessage { TestSubMessage sub = 1; }
 
 message TestMessage {
+  enum TestSubEnum {
+    value0 = 0;
+    value1 = 1;
+    value2 = 2;
+  }
+
   string string = 1;
   int32 int32 = 2;
   bool bool = 3;
@@ -29,6 +35,11 @@ message TestMessage {
   map<string, string> map_string_string = 15;
   map<int64, TestSubMessage> map_int64_sub = 16;
   map<bool, string> map_bool_string = 17;
+  
+  oneof oneof {
+    string oneofstring = 18;
+    TestSubEnum oneofenum = 19;
+  }
 }
 
 message RepeatedTestMessage {
