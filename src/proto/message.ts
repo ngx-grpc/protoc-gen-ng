@@ -134,7 +134,7 @@ export class Message {
         return this.proto.getRelativeTypeName(field.typeName) + suffix;
       }
 
-      return FieldTypesConfig[field.type].type + suffix;
+      return (FieldTypesConfig[field.type] as FieldTypeConfig).type + suffix;
     }
 
     const getWriteCall = (field: MessageField) => {
@@ -172,11 +172,11 @@ export class Message {
         return `${prefix}writer.write${repeated}Message(${field.number}, instance.${processName(field.name)} as any, ${subType}.toBinaryWriter);${suffix}`;
       }
 
-      return `${prefix}writer.write${repeated}${FieldTypesConfig[field.type].write}(${field.number}, instance.${processName(field.name)});${suffix}`;
+      return `${prefix}writer.write${repeated}${(FieldTypesConfig[field.type] as FieldTypeConfig).write}(${field.number}, instance.${processName(field.name)});${suffix}`;
     }
 
     const getReadCall = (field: MessageField) => {
-      const config = FieldTypesConfig[field.type];
+      const config = FieldTypesConfig[field.type] as FieldTypeConfig;
 
       if (field.isMessage) {
         const subType = this.proto.getRelativeTypeName(field.typeName);
@@ -272,7 +272,7 @@ export class Message {
           : f.label === MessageFieldCardinality.repeated
             ? '[]'
             : FieldTypesConfig[f.type]
-              ? FieldTypesConfig[f.type].defaultExpression
+              ? (FieldTypesConfig[f.type] as FieldTypeConfig).defaultExpression
               : 'undefined'}
     `);
 
