@@ -13,7 +13,7 @@ const FieldTypesConfig: { [prop in MessageFieldType]?: FieldTypeConfig } = {
   [MessageFieldType.fixed32]: { type: 'number', read: 'Fixed32', write: 'Fixed32', defaultExpression: '0' },
   [MessageFieldType.fixed64]: { type: 'number', read: 'Fixed64', write: 'Fixed64', defaultExpression: '0' },
   [MessageFieldType.float]: { type: 'number', read: 'Float', write: 'Float', defaultExpression: '0' },
-  // [MessageFieldType.group]: null, // does not exist in v3
+  // [MessageFieldType.group]: null, // does not exist in v3, automatically converted to MessageFieldType.message
   [MessageFieldType.int32]: { type: 'number', read: 'Int32', write: 'Int32', defaultExpression: '0' },
   [MessageFieldType.int64]: { type: 'number', read: 'Int64', write: 'Int64', defaultExpression: '0' },
   // [MessageFieldType.message]: null,
@@ -28,10 +28,11 @@ const FieldTypesConfig: { [prop in MessageFieldType]?: FieldTypeConfig } = {
 };
 
 export class MessageField {
+
   name: string;
   number: number;
   label: MessageFieldCardinality;
-  type: number;
+  type: MessageFieldType;
   typeName: string;
   jsonName: string;
   oneofIndex?: number;
@@ -54,6 +55,11 @@ export class MessageField {
     this.oneofIndex = value.oneofIndex;
     this.options = value.options || {};
   }
+
+  get isMessage() {
+    return this.type === MessageFieldType.message || this.type === MessageFieldType.group;
+  }
+
 }
 
 export class Message {
@@ -89,7 +95,7 @@ export class Message {
   }
 
   isFieldMap(field: MessageField) {
-    if (field.type === MessageFieldType.message) {
+    if (field.isMessage) {
       const msg = this.proto.resolveTypeMetadata(field.typeName).message;
 
       if (msg && msg.options.mapEntry) {
@@ -124,7 +130,7 @@ export class Message {
 
       const suffix = field.label === MessageFieldCardinality.repeated ? '[]' : '';
 
-      if (field.type === MessageFieldType.enum || field.type === MessageFieldType.message) {
+      if (field.type === MessageFieldType.enum || field.isMessage) {
         return this.proto.getRelativeTypeName(field.typeName) + suffix;
       }
 
@@ -136,7 +142,7 @@ export class Message {
       const suffix = ' }'
       const repeated = field.label === MessageFieldCardinality.repeated ? 'Repeated' : '';
 
-      if (field.type === MessageFieldType.message) {
+      if (field.isMessage) {
         const subType = this.proto.getRelativeTypeName(field.typeName);
 
         if (this.isFieldMap(field)) {
@@ -172,7 +178,7 @@ export class Message {
     const getReadCall = (field: MessageField) => {
       const config = FieldTypesConfig[field.type];
 
-      if (field.type === MessageFieldType.message) {
+      if (field.isMessage) {
         const subType = this.proto.getRelativeTypeName(field.typeName);
 
         if (this.isFieldMap(field)) {
@@ -324,17 +330,17 @@ export class Message {
 
 export module ${this.name} {
   ${[...this.oneofDeclList.map((od, i) =>
-    new Enum({
-      name: this.createCaseEnumName(od.name),
-      reservedNameList: [],
-      reservedRangeList: [],
-      valueList: [
-        { name: 'none', number: 0 },
-        ...this.fieldList.filter(f => f.oneofIndex === i).map((f, fi) => ({ name: f.name, number: fi + 1 })),
-      ],
-    }).toString(),
-  ),
-  ].join('\n')}
+      new Enum({
+        name: this.createCaseEnumName(od.name),
+        reservedNameList: [],
+        reservedRangeList: [],
+        valueList: [
+          { name: 'none', number: 0 },
+          ...this.fieldList.filter(f => f.oneofIndex === i).map((f, fi) => ({ name: f.name, number: fi + 1 })),
+        ],
+      }).toString(),
+    ),
+      ].join('\n')}
   ${[...this.enumTypeList.map(e => e.toString()), ...this.nestedTypeList.map(m => m.toString())].join('\n\n')}
 }`;
   }
