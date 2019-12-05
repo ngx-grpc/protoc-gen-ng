@@ -7,7 +7,7 @@ describe('no-package.proto', () => {
   it('should produce TestMessage', () => {
     expect(deprecated.TestMessage).toBeTruthy();
     expect(new deprecated.TestMessage()).toBeTruthy();
-    expect(new deprecated.TestMessage().message).toBe(undefined);
+    expect(new deprecated.TestMessage().message).toBe('');
   });
 
   it('should produce TestServiceClient', () => {

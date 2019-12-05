@@ -25,7 +25,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:generate": "rimraf ./test/out/* && protoc --plugin=protoc-gen-ng=$(pwd)/dist/main.js --ng_out=./test/out -I test/proto $(find test/proto -iname \"*.proto\")",
-    "test:generate-grpc-web": "rimraf ./test/out-grpc-web/* && protoc -I=test/proto --js_out=import_style=commonjs:test/out-grpc-web --grpc-web_out=import_style=typescript,mode=grpcwebtext:test/out-grpc-web $(find test/proto -iname \"*.proto\")",
+    "test:generate-grpc-web": "rimraf ./test/out-grpc-web/* && protoc -I=test/proto --js_out=import_style=commonjs:test/out-grpc-web --grpc-web_out=import_style=typescript,mode=grpcweb:test/out-grpc-web $(find test/proto -iname \"*.proto\")",
     "release": "semantic-release"
   },
   "devDependencies": {

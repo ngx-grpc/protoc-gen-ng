@@ -73,4 +73,44 @@ describe('data-types.proto', () => {
     expect(msg.uint64).toEqual([]);
   });
 
+  it('should have toObject that creates a message snapshot', () => {
+    const msg = new dataTypes.TestMessage()
+    const msgRepeated = new dataTypes.RepeatedTestMessage()
+
+    expect(msg.toObject()).toEqual({
+      string: '',
+      int32: 0,
+      bool: false,
+      subMessage: undefined,
+      double: 0,
+      float: 0,
+      bytes: new Uint8Array(),
+      int64: 0,
+      enum: 0,
+      fixed32: 0,
+      fixed64: 0,
+      uint32: 0,
+      uint64: 0,
+      mapStringString: {},
+      mapInt64Sub: {},
+      mapBoolString: {},
+    });
+
+    expect(msgRepeated.toObject()).toEqual({
+      string: [],
+      int32: [],
+      bool: [],
+      subMessage: [],
+      double: [],
+      float: [],
+      bytes: [],
+      int64: [],
+      enum: [],
+      fixed32: [],
+      fixed64: [],
+      uint32: [],
+      uint64: [],
+    });
+  })
+
 });

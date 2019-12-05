@@ -1,5 +1,6 @@
 import { camelize, classify } from '../utils';
 import { Enum } from './enum';
+import { JSDoc } from './js-doc';
 import { Proto } from './proto';
 import { MessageFieldCardinality, MessageFieldType } from './types';
 
@@ -116,9 +117,9 @@ export class Message {
 
   toString() {
     const processName = (name: string) => {
-      const escaped = ['default', 'var', 'let', 'const', 'function', 'class'].includes(name) ? 'pb_' + name : name;
+      const camelized = camelize(name);
 
-      return camelize(escaped);
+      return ['default', 'var', 'let', 'const', 'function', 'class', 'toObject', 'toJSON'].includes(camelized) ? 'pb_' + camelized : camelized;
     }
 
     const getDataType = (field: MessageField) => {
@@ -224,11 +225,13 @@ export class Message {
     const attributes = this.fieldList.map(f => {
       return `private _${processName(f.name)}?: ${getDataType(f)};`;
     });
+
     const attributeGetters = this.fieldList.map(f => {
       const name = processName(f.name);
 
       return `get ${name}(): ${getDataType(f)} | undefined { return this._${name} }`;
     });
+
     const attributeSetters = this.fieldList.map(f => {
       const name = processName(f.name);
       let oneOf = '';
@@ -260,11 +263,72 @@ export class Message {
       }`;
     });
 
-    const attributeInitializers = this.fieldList.map(f => `this.${processName(f.name)} = value.${processName(f.name)}`);
+    const attributeInitializers = this.fieldList.map(field => {
+      const fieldName = processName(field.name);
+
+      if (field.isMessage) {
+        const subType = this.proto.getRelativeTypeName(field.typeName);
+
+        if (this.isFieldMap(field)) {
+          return `this.${fieldName} = {...(value.${fieldName} || {})};`; // TODO properly clone submessages
+        }
+
+        if (field.label === MessageFieldCardinality.repeated) {
+          return `this.${fieldName} = (value.${fieldName} || []).map(m => new ${subType}(m));`;
+        }
+
+        return `this.${fieldName} = value.${fieldName} ? new ${subType}(value.${fieldName}) : undefined;`;
+      }
+
+      if (field.type === MessageFieldType.bytes) {
+        if (field.label === MessageFieldCardinality.repeated) {
+          return `this.${fieldName} = (value.${fieldName} || []).map(b => b ? b.subarray(0) : new Uint8Array());`;
+        }
+
+        return `this.${fieldName} = value.${fieldName} ? value.${fieldName}.subarray(0) : undefined;`;
+      }
+
+      if (field.label === MessageFieldCardinality.repeated) {
+        return `this.${fieldName} = (value.${fieldName} || []).slice();`;
+      }
+
+      return `this.${fieldName} = value.${fieldName}`;
+    });
+
+    const toObjectMappings = this.fieldList.map(field => {
+      const fieldName = processName(field.name);
+
+      if (field.isMessage) {
+        if (this.isFieldMap(field)) {
+          return `${fieldName}: {...(this.${fieldName} || {})},`; // TODO properly clone submessages
+        }
+
+        if (field.label === MessageFieldCardinality.repeated) {
+          return `${fieldName}: (this.${fieldName} || []).map(m => m.toObject()),`;
+        }
+
+        return `${fieldName}: this.${fieldName} ? this.${fieldName}.toObject() : undefined,`;
+      }
+
+      if (field.type === MessageFieldType.bytes) {
+        if (field.label === MessageFieldCardinality.repeated) {
+          return `${fieldName}: (this.${fieldName} || []).map(b => b ? b.subarray(0) : new Uint8Array()),`;
+        }
+
+        return `${fieldName}: this.${fieldName} ? this.${fieldName}.subarray(0) : new Uint8Array(),`;
+      }
+
+      if (field.label === MessageFieldCardinality.repeated) {
+        return `${fieldName}: (this.${fieldName} || []).slice(),`;
+      }
+
+      return `${fieldName}: this.${fieldName},`;
+    });
+
     const serializeAttributes = this.fieldList.map(f => getWriteCall(f));
     const deserializeAttributes = this.fieldList.map(f => getReadCall(f));
 
-    const afterReadInitializers = this.fieldList
+    const defaultValueCheckers = this.fieldList
       .filter(f => typeof f.oneofIndex !== 'number') // we do not want to add default initializers to oneOf properties cause it against its logic
       .map(f => `instance.${processName(f.name)} = instance.${processName(f.name)} || ${
         this.isFieldMap(f) ?
@@ -276,7 +340,16 @@ export class Message {
               : 'undefined'}
     `);
 
+    const constructorDoc = new JSDoc();
+
+    constructorDoc.setDescription('Creates an object and applies default Protobuf values');
+    constructorDoc.addParam({ name: 'value', type: `${this.name}`, description: `Initial values object or instance of ${this.name} to clone from (deep cloning)` });
+
     return `export class ${this.name} {
+
+  static refineValues(instance: ${this.name}) {
+    ${defaultValueCheckers.join(';')}
+  }
 
   static fromBinaryReader(instance: ${this.name}, reader: BinaryReader) {
     while (reader.nextField()) {
@@ -290,7 +363,7 @@ export class Message {
       }
     }
 
-    ${afterReadInitializers.join(';')}
+    ${this.name}.refineValues(instance);
   }
 
   static fromBinary(bytes: ByteSource) {
@@ -317,14 +390,27 @@ export class Message {
 
   ${oneOfCaseAttrubutes.join('\n')}
 
-  constructor(value: Partial<${this.name}> = {}) {
+  ${constructorDoc}
+  constructor(value?: Partial<${this.name}>) {
+    value = value || {};
     ${attributeInitializers.join(';')}
+    ${this.name}.refineValues(this);
   }
 
   ${attributeGetters.join('\n')}
   ${attributeSetters.join('\n')}
 
   ${oneOfCaseAttributeGetters.join('\n')}
+
+  toObject() {
+    return {
+      ${toObjectMappings.join('\n')}
+    };
+  }
+
+  toJSON() {
+    return this.toObject();
+  }
 
 }
 
