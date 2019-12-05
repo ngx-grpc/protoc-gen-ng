@@ -1,3 +1,20 @@
+# [0.3.0](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.2.3...v0.3.0) (2019-12-05)
+
+
+### Bug Fixes
+
+* treat proto2 group as message type ([ffe8410](https://github.com/ngx-grpc/protoc-gen-ng/commit/ffe8410dd350d3e1e68cbca9293fdedd8e66e8ff))
+
+
+### Features
+
+* add possibility to cast from and to snapshot ([c1a75dd](https://github.com/ngx-grpc/protoc-gen-ng/commit/c1a75dd07f807b53e4b8849ca9dc216eaf72d843))
+
+
+### BREAKING CHANGES
+
+* the object that is provided as message constructor argument is always cloned; the message is always initialized with proto default values
+
 ## [0.2.3](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.2.2...v0.2.3) (2019-11-25)
 
 
