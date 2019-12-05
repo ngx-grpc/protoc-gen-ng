@@ -416,17 +416,17 @@ export class Message {
 
 export module ${this.name} {
   ${[...this.oneofDeclList.map((od, i) =>
-      new Enum({
-        name: this.createCaseEnumName(od.name),
-        reservedNameList: [],
-        reservedRangeList: [],
-        valueList: [
-          { name: 'none', number: 0 },
-          ...this.fieldList.filter(f => f.oneofIndex === i).map((f, fi) => ({ name: f.name, number: fi + 1 })),
-        ],
-      }).toString(),
-    ),
-      ].join('\n')}
+    new Enum({
+      name: this.createCaseEnumName(od.name),
+      reservedNameList: [],
+      reservedRangeList: [],
+      valueList: [
+        { name: 'none', number: 0 },
+        ...this.fieldList.filter(f => f.oneofIndex === i).map((f, fi) => ({ name: f.name, number: fi + 1 })),
+      ],
+    }).toString(),
+  ),
+  ].join('\n')}
   ${[...this.enumTypeList.map(e => e.toString()), ...this.nestedTypeList.map(m => m.toString())].join('\n\n')}
 }`;
   }
