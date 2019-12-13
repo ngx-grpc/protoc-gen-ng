@@ -96,7 +96,10 @@ export class Proto {
   }
 
   getDependencyPackageName(proto: Proto) {
-    return proto.pb_package ? proto.pb_package.replace(/\.([a-z])/g, v => v.toUpperCase()).replace(/\./g, '') : ('noPackage' + this.resolved.dependencies.indexOf(proto));
+    const name = proto.pb_package ? proto.pb_package.replace(/\.([a-z])/g, v => v.toUpperCase()).replace(/\./g, '') : 'noPackage';
+    const index = String(this.resolved.dependencies.indexOf(proto)).padStart(3, '0'); // we always need index to avoid accidental collisions, see type.pb.ts
+
+    return name + index;
   }
 
   getRelativeTypeName(pbType: string) {

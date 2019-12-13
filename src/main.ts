@@ -7,10 +7,11 @@ import protocPlugin from 'protoc-plugin';
 import { Config } from './config';
 import { Logger } from './logger';
 import { Proto } from './proto/proto';
+import wkt from './wkt.meta.json';
 
 function main() {
   protocPlugin((protosProtocPlugin: Proto[]) => {
-    const protos = protosProtocPlugin.map(proto => new Proto(proto));
+    const protos = [...(wkt as unknown as Proto[]), ...protosProtocPlugin].map(proto => new Proto(proto));
 
     if (Config.debug) {
       mkdirSync('debug', { recursive: true });
