@@ -1,3 +1,10 @@
+## [0.3.1](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.3.0...v0.3.1) (2019-12-13)
+
+
+### Features
+
+* add basic generation of well-known types ([ca148dd](https://github.com/ngx-grpc/protoc-gen-ng/commit/ca148dda9d98232b4a8bc160735bb3ba49d1efc5))
+
 # [0.3.0](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.2.3...v0.3.0) (2019-12-05)
 
 
