@@ -1,3 +1,10 @@
+## [0.3.2](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.3.1...v0.3.2) (2019-12-13)
+
+
+### Bug Fixes
+
+* always transform enum values to camel case ([f52144a](https://github.com/ngx-grpc/protoc-gen-ng/commit/f52144a8f426dede9133e24714634484618a822a))
+
 ## [0.3.1](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.3.0...v0.3.1) (2019-12-13)
 
 
