@@ -1,3 +1,5 @@
+import { camelize } from '../utils';
+
 export class Enum {
 
   name: string;
@@ -17,9 +19,9 @@ export class Enum {
 
   toString() {
     function processName(name: string) {
-      const escaped = ['default', 'var', 'let', 'const', 'function', 'class'].includes(name) ? 'PB_' + name : name;
+      const escaped = ['default', 'var', 'let', 'const', 'function', 'class'].includes(name) ? 'pb_' + name : name;
 
-      return escaped;
+      return camelize(escaped);
     }
 
     const values = this.valueList.map(v => `${processName(v.name)} = ${v.number},`);
