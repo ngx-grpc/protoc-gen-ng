@@ -17,6 +17,10 @@ export function dasherize(str: string) {
 }
 
 export function camelize(str: string) {
+  if (str.toUpperCase() === str) {
+    str = str.toLowerCase();
+  }
+
   return str
     .replace(STRING_CAMELIZE_REGEXP, (_match, _separator, chr) => {
       return chr ? chr.toUpperCase() : '';
