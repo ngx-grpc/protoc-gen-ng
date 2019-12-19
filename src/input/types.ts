@@ -1,6 +1,6 @@
 // https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/type.proto
 
-export enum MessageFieldType {
+export enum ProtoMessageFieldType {
   unknown = 0,
   double = 1,
   float = 2,
@@ -22,7 +22,7 @@ export enum MessageFieldType {
   sint64 = 18,
 }
 
-export enum MessageFieldCardinality {
+export enum ProtoMessageFieldCardinality {
   unknown = 0,
   optional = 1,
   required = 2,

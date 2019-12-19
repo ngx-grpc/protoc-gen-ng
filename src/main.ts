@@ -2,11 +2,12 @@
 
 import { mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import * as prettier from 'prettier';
 import protocPlugin from 'protoc-plugin';
 import { Config } from './config';
+import { Proto } from './input/proto';
 import { Logger } from './logger';
-import { Proto } from './proto/proto';
+import { Printer } from './output/misc/printer';
+import { ProtobufFile } from './output/protobuf-file';
 import wkt from './wkt.meta.json';
 
 function main() {
@@ -38,45 +39,14 @@ function main() {
       );
 
     return protos.map(proto => {
-      const types = [
-        ...proto.enumTypeList,
-        ...proto.messageTypeList,
-        ...proto.serviceList,
-      ];
+      const printer = new Printer();
+      const file = new ProtobufFile(proto);
 
-      const generated = `// THIS IS A GENERATED FILE
-      // DO NOT MODIFY IT! YOUR CHANGES WILL BE LOST
-
-/*
-  To configure the services you need to provider a configuration for each of them.
-
-  E.g. you can create a module where you configure all of them and then import this module into your AppModule:
-
-  const grpcSettings = { host: environment.grpcHost };
-
-  @NgModule({
-    providers: [
-${ proto.serviceList.map(s => `      { provide: ${s.getConfigInjectionTokenName()}, useValue: grpcSettings },`).sort().join('\n')}
-    ],
-  })
-  export class GrpcConfigModule { }
-*/
-
-      /* tslint:disable */
-      /* eslint-disable */
-      import { Inject, Injectable, InjectionToken } from '@angular/core';
-      import { GrpcCallType, GrpcClient, GrpcClientSettings, GrpcHandler } from '@ngx-grpc/core';
-      import { BinaryReader, BinaryWriter, ByteSource } from 'google-protobuf';
-      import { AbstractClientBase, Error, GrpcWebClientBase, Metadata, Status } from 'grpc-web';
-      import { Observable } from 'rxjs';
-      ${proto.getImportedDependencies()}
-
-      ${types.map(t => t.toString()).join('\n\n')}
-`;
+      file.print(printer);
 
       return {
         name: proto.getGeneratedFileBaseName() + '.ts',
-        content: prettier.format(generated, { parser: 'typescript', singleQuote: true }),
+        content: printer.finalize(),
       };
     });
   });

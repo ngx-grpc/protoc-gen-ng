@@ -40,3 +40,9 @@ export function pascalize(str: string) {
     .replace(STRING_UNDERSCORE_REGEXP_2, '_')
     .toUpperCase();
 }
+
+export function camelizeSafe(name: string) {
+  const escaped = ['default', 'var', 'let', 'const', 'function', 'class'].includes(name) ? 'pb_' + name : name;
+
+  return camelize(escaped);
+}
