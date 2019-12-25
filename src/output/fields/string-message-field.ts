@@ -38,9 +38,15 @@ export class StringMessageField implements MessageField {
   }
 
   printToBinaryWriter(printer: Printer) {
-    printer.add(`if (instance.${this.attributeName} !== undefined && instance.${this.attributeName} !== null) {
-      writer.write${this.isArray ? 'Repeated' : ''}String(${this.messageField.number}, instance.${this.attributeName});
-    }`);
+    if (this.isArray) {
+      printer.add(`if (instance.${this.attributeName} && instance.${this.attributeName}.length) {
+        writer.writeRepeatedString(${this.messageField.number}, instance.${this.attributeName});
+      }`);
+    } else {
+      printer.add(`if (instance.${this.attributeName}) {
+        writer.writeString(${this.messageField.number}, instance.${this.attributeName});
+      }`);
+    }
   }
 
   printPrivateAttribute(printer: Printer) {

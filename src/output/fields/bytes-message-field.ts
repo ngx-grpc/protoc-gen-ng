@@ -38,7 +38,7 @@ export class BytesMessageField implements MessageField {
   }
 
   printToBinaryWriter(printer: Printer) {
-    printer.add(`if (instance.${this.attributeName} !== undefined && instance.${this.attributeName} !== null) {
+    printer.add(`if (instance.${this.attributeName} && instance.${this.attributeName}.length) {
       writer.write${this.isArray ? 'Repeated' : ''}Bytes(${this.messageField.number}, instance.${this.attributeName});
     }`);
   }

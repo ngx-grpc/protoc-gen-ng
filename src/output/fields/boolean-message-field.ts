@@ -38,9 +38,15 @@ export class BooleanMessageField implements MessageField {
   }
 
   printToBinaryWriter(printer: Printer) {
-    printer.add(`if (instance.${this.attributeName} !== undefined && instance.${this.attributeName} !== null) {
-      writer.write${this.isArray ? 'Repeated' : ''}Bool(${this.messageField.number}, instance.${this.attributeName});
-    }`);
+    if (this.isArray) {
+      printer.add(`if (instance.${this.attributeName} && instance.${this.attributeName}.length) {
+        writer.writeRepeatedBool(${this.messageField.number}, instance.${this.attributeName});
+      }`);
+    } else {
+      printer.add(`if (instance.${this.attributeName}) {
+        writer.writeBool(${this.messageField.number}, instance.${this.attributeName});
+      }`);
+    }
   }
 
   printPrivateAttribute(printer: Printer) {

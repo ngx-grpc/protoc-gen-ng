@@ -39,8 +39,6 @@ export class MapMessageField implements MessageField {
         instance.${this.attributeName}[${msgVarName}.key] = ${msgVarName}.value;
         break;`
     );
-
-    printer.add('break;');
   }
 
   printToBinaryWriter(printer: Printer) {
@@ -50,18 +48,15 @@ export class MapMessageField implements MessageField {
     const castedKey = this.keyField.type === ProtoMessageFieldType.string ? 'key' : 'Number(key)';
 
     // TODO add key filter for NaN for number fields and 0-1 for boolean fields
+    printer.add(`if (!!${varName}) {
+      const ${keysVarName} = Object.keys(${varName} as any);
 
-    printer.add(`if (instance.${this.attributeName} !== undefined && instance.${this.attributeName} !== null) {
-      if (!!${varName}) {
-        const ${keysVarName} = Object.keys(${varName} as any);
+      if (${keysVarName}.length) {
+        const ${repeatedVarName} = ${keysVarName}
+          .map(key => ({ key: ${castedKey}, value: (${varName} as any)[key] }))
+          .reduce((r, v) => [...r, v], [] as any[]);
 
-        if (${keysVarName}.length) {
-          const ${repeatedVarName} = ${keysVarName}
-            .map(key => ({ key: ${castedKey}, value: (${varName} as any)[key] }))
-            .reduce((r, v) => [...r, v], [] as any[]);
-
-          writer.writeRepeatedMessage(${this.messageField.number}, ${repeatedVarName}, ${this.mapMessageClassName}.toBinaryWriter);
-        }
+        writer.writeRepeatedMessage(${this.messageField.number}, ${repeatedVarName}, ${this.mapMessageClassName}.toBinaryWriter);
       }
     }`);
   }

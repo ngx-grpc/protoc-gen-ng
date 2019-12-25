@@ -38,9 +38,15 @@ export class EnumMessageField implements MessageField {
   }
 
   printToBinaryWriter(printer: Printer) {
-    printer.add(`if (instance.${this.attributeName} !== undefined && instance.${this.attributeName} !== null) {
-      writer.write${this.isArray ? 'Repeated' : ''}Enum(${this.messageField.number}, instance.${this.attributeName});
-    }`);
+    if (this.isArray) {
+      printer.add(`if (instance.${this.attributeName} && instance.${this.attributeName}.length) {
+        writer.writeRepeatedEnum(${this.messageField.number}, instance.${this.attributeName});
+      }`);
+    } else {
+      printer.add(`if (instance.${this.attributeName}) {
+        writer.writeEnum(${this.messageField.number}, instance.${this.attributeName});
+      }`);
+    }
   }
 
   printPrivateAttribute(printer: Printer) {
