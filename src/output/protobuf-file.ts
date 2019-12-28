@@ -23,25 +23,11 @@ export class ProtobufFile {
       serviceClients.push(serviceClient);
     });
 
-    printer.add(`/*
-  To configure the services you need to provider a configuration for each of them.
+    printer.add(this.proto.getImportedDependencies());
 
-  E.g. you can create a module where you configure all of them and then import this module into your AppModule:
-
-  const grpcSettings = { host: environment.grpcHost };
-
-  @NgModule({
-    providers: [
-${ serviceClientConfigs.map(s => `      { provide: ${s.getTokenName()}, useValue: grpcSettings },`).sort().join('\n')}
-    ],
-  })
-  export class GrpcConfigModule { }
-*/
-
-${this.proto.getImportedDependencies()}
-`);
-
-    serviceClientConfigs.forEach(serviceClientConfig => serviceClientConfig.print(printer));
+    if (serviceClientConfigs.length) {
+      printer.add(`import {${serviceClientConfigs.map(scc => scc.getTokenName()).join(',')}} from './${this.proto.getGeneratedFileBaseName()}conf';`);
+    }
 
     this.proto.enumTypeList.forEach(protoEnum => {
       const _enum = new Enum(this.proto, protoEnum);

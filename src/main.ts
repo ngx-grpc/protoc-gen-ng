@@ -6,6 +6,7 @@ import protocPlugin from 'protoc-plugin';
 import { Config } from './config';
 import { Proto } from './input/proto';
 import { Logger } from './logger';
+import { ConfigFile } from './output/config-file';
 import { Printer } from './output/misc/printer';
 import { ProtobufFile } from './output/protobuf-file';
 import wkt from './wkt.meta.json';
@@ -38,17 +39,28 @@ function main() {
           })
       );
 
-    return protos.map(proto => {
-      const printer = new Printer();
-      const file = new ProtobufFile(proto);
+    return protos.reduce((res, proto) => {
+      const basename = proto.getGeneratedFileBaseName();
+      const files: any[] = [];
 
-      file.print(printer);
+      if (proto.serviceList.length) {
+        const configPrinter = new Printer();
+        const configFile = new ConfigFile(proto);
 
-      return {
-        name: proto.getGeneratedFileBaseName() + '.ts',
-        content: printer.finalize(),
-      };
-    });
+        configFile.print(configPrinter);
+
+        files.push({ name: basename + 'conf.ts', content: configPrinter.finalize() });
+      }
+
+      const pbPrinter = new Printer();
+      const pbFile = new ProtobufFile(proto);
+
+      pbFile.print(pbPrinter);
+
+      files.push({ name: basename + '.ts', content: pbPrinter.finalize() });
+
+      return [...res, ...files];
+    }, [] as any[]);
   });
 }
 

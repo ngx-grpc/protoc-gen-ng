@@ -47,7 +47,7 @@ export class ServiceClient {
 
       printer.newLine();
       printer.newLine();
-    })
+    });
 
     printer.add('}');
   }
