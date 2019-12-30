@@ -54,6 +54,7 @@ export class OneOf {
       .filter(ff => ff.oneofIndex === field.oneofIndex && ff.name !== field.name)
       .map(ff => `this._${camelizeSafe(ff.name)}`);
 
+    // TODO setter should not check for null or undefined
     return `if (value !== undefined && value !== null) {
           ${otherFields.length ? [...otherFields, 'undefined'].join(' = ') : ''}
           this._${camelizeSafe(this.attributeName)} = ${this.message.name}.${this.enumName}.${camelizeSafe(field.name)};
