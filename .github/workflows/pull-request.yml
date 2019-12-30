@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - master
+      - develop
 
 jobs:
   test:
@@ -15,11 +16,7 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v1
       - name: Install protoc
-        run: |
-          wget -O /tmp/protoc.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.11.2/protoc-3.11.2-linux-x86_64.zip
-          unzip /tmp/protoc.zip -d /tmp/protoc3
-          sudo mv /tmp/protoc3/bin/* /usr/local/bin/
-          sudo mv /tmp/protoc3/include/* /usr/local/include/
+        uses: Arduino/actions/setup-protoc@master
       - name: Install dependencies
         run: npm ci
       - name: Build
