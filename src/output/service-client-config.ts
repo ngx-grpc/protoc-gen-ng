@@ -16,8 +16,8 @@ export class ServiceClientConfig {
   }
 
   print(printer: Printer) {
-    printer.addDeps(ExternalDependencies.InjectionToken);
-    printer.add(`export const ${this.getTokenName()} = new InjectionToken('${this.getTokenName()}');`);
+    printer.addDeps(ExternalDependencies.GrpcClientSettings, ExternalDependencies.InjectionToken);
+    printer.add(`export const ${this.getTokenName()} = new InjectionToken<GrpcClientSettings>('${this.getTokenName()}');`);
     printer.newLine();
   }
 
