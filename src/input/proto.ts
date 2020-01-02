@@ -1,13 +1,13 @@
 import { Logger } from '../logger';
 import { dasherize } from '../utils';
-import { Enum } from './enum';
-import { Message } from './message';
-import { Service } from './service';
+import { ProtoEnum } from './proto-enum';
+import { ProtoMessage } from './proto-message';
+import { ProtoService } from './proto-service';
 
 export interface MessageIndexMeta {
   proto: Proto;
-  message?: Message;
-  enum?: Enum;
+  message?: ProtoMessage;
+  enum?: ProtoEnum;
 }
 
 export class Proto {
@@ -17,9 +17,9 @@ export class Proto {
   dependencyList: string[];
   publicDependencyList: number[];
   weakDependencyList: [];
-  messageTypeList: Message[];
-  enumTypeList: Enum[];
-  serviceList: Service[];
+  messageTypeList: ProtoMessage[];
+  enumTypeList: ProtoEnum[];
+  serviceList: ProtoService[];
   extensionList: any[];
 
   resolved: {
@@ -36,22 +36,22 @@ export class Proto {
     this.dependencyList = value.dependencyList || [];
     this.publicDependencyList = value.publicDependencyList;
     this.weakDependencyList = value.weakDependencyList;
-    this.messageTypeList = value.messageTypeList.map(e => new Message(e, this));
-    this.enumTypeList = value.enumTypeList.map(e => new Enum(e));
-    this.serviceList = value.serviceList.map(e => new Service(e, this));
+    this.messageTypeList = (value.messageTypeList || []).map(e => new ProtoMessage(e));
+    this.enumTypeList = value.enumTypeList.map(e => new ProtoEnum(e));
+    this.serviceList = value.serviceList.map(e => new ProtoService(e));
     this.extensionList = value.extensionList;
 
     this.index();
   }
 
   private index() {
-    const indexEnums = (path: string, enums: Enum[]) => {
+    const indexEnums = (path: string, enums: ProtoEnum[]) => {
       enums.forEach(oneEnum => {
         this.messageIndex.set(path + '.' + oneEnum.name, { proto: this, enum: oneEnum });
       });
     };
 
-    const indexMessages = (path: string, submessages: Message[]) => {
+    const indexMessages = (path: string, submessages: ProtoMessage[]) => {
       submessages.forEach(message => {
         const fullname = path + '.' + message.name;
 

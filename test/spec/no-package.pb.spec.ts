@@ -1,6 +1,7 @@
 import { GrpcHandler } from '@ngx-grpc/core';
 import 'jest';
 import * as noPackage from '../out/no-package.pb';
+import * as noPackageConf from '../out/no-package.pbconf';
 
 describe('no-package.proto', () => {
 
@@ -15,7 +16,7 @@ describe('no-package.proto', () => {
   });
 
   it('should produce GRPC_TEST_SERVICE_CLIENT_SETTINGS', () => {
-    expect(noPackage.GRPC_TEST_SERVICE_CLIENT_SETTINGS).toBeTruthy();
+    expect(noPackageConf.GRPC_TEST_SERVICE_CLIENT_SETTINGS).toBeTruthy();
   });
 
   it('should produce TestServiceClient', () => {

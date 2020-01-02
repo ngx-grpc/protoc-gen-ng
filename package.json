@@ -24,8 +24,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:generate": "rimraf ./test/out/* && protoc --plugin=protoc-gen-ng=$(pwd)/dist/main.js --ng_out=./test/out -I test/proto $(find test/proto -iname \"*.proto\")",
-    "test:generate-grpc-web": "rimraf ./test/out-grpc-web/* && protoc -I=test/proto --js_out=import_style=commonjs:test/out-grpc-web --grpc-web_out=import_style=typescript,mode=grpcweb:test/out-grpc-web $(find test/proto -iname \"*.proto\")",
+    "test:generate": "mkdir -p ./test/out && rimraf ./test/out/* && protoc --plugin=protoc-gen-ng=$(pwd)/dist/main.js --ng_out=./test/out -I test/proto $(find test/proto -iname \"*.proto\")",
+    "test:generate-grpc-web": "mkdir -p ./test/out-grpc-web && rimraf ./test/out-grpc-web/* && protoc -I=test/proto --js_out=import_style=commonjs:test/out-grpc-web --grpc-web_out=import_style=typescript,mode=grpcweb:test/out-grpc-web $(find test/proto -iname \"*.proto\")",
     "wktgen:macosx": "mkdir -p dev-null && export WKT=$(dirname $(dirname $(greadlink -f $(which protoc))))/include && protoc --plugin=protoc-gen-wkt=$(pwd)/wktgen.js --wkt_out=./dev-null -I $WKT $(find $WKT -iname \"*.proto\")",
     "release": "semantic-release"
   },

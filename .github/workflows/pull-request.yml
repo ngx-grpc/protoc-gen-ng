@@ -1,0 +1,29 @@
+name: Pull request
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone
+        uses: actions/checkout@v1
+      - name: Install node
+        uses: actions/setup-node@v1
+      - name: Install protoc
+        uses: Arduino/actions/setup-protoc@master
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: |
+          npm run test:generate
+          npm run test

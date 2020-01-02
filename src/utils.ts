@@ -17,6 +17,10 @@ export function dasherize(str: string) {
 }
 
 export function camelize(str: string) {
+  if (str.toUpperCase() === str) {
+    str = str.toLowerCase();
+  }
+
   return str
     .replace(STRING_CAMELIZE_REGEXP, (_match, _separator, chr) => {
       return chr ? chr.toUpperCase() : '';
@@ -39,4 +43,10 @@ export function pascalize(str: string) {
     .replace(STRING_UNDERSCORE_REGEXP_1, '$1_$2')
     .replace(STRING_UNDERSCORE_REGEXP_2, '_')
     .toUpperCase();
+}
+
+export function camelizeSafe(name: string) {
+  const escaped = ['default', 'var', 'let', 'const', 'function', 'class'].includes(name) ? 'pb_' + name : name;
+
+  return camelize(escaped);
 }

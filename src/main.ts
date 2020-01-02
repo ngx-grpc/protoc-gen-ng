@@ -2,11 +2,13 @@
 
 import { mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import * as prettier from 'prettier';
 import protocPlugin from 'protoc-plugin';
 import { Config } from './config';
+import { Proto } from './input/proto';
 import { Logger } from './logger';
-import { Proto } from './proto/proto';
+import { ConfigFile } from './output/config-file';
+import { Printer } from './output/misc/printer';
+import { ProtobufFile } from './output/protobuf-file';
 import wkt from './wkt.meta.json';
 
 function main() {
@@ -37,48 +39,28 @@ function main() {
           })
       );
 
-    return protos.map(proto => {
-      const types = [
-        ...proto.enumTypeList,
-        ...proto.messageTypeList,
-        ...proto.serviceList,
-      ];
+    return protos.reduce((res, proto) => {
+      const basename = proto.getGeneratedFileBaseName();
+      const files: any[] = [];
 
-      const generated = `// THIS IS A GENERATED FILE
-      // DO NOT MODIFY IT! YOUR CHANGES WILL BE LOST
+      if (proto.serviceList.length) {
+        const configPrinter = new Printer();
+        const configFile = new ConfigFile(proto);
 
-/*
-  To configure the services you need to provider a configuration for each of them.
+        configFile.print(configPrinter);
 
-  E.g. you can create a module where you configure all of them and then import this module into your AppModule:
+        files.push({ name: basename + 'conf.ts', content: configPrinter.finalize() });
+      }
 
-  const grpcSettings = { host: environment.grpcHost };
+      const pbPrinter = new Printer();
+      const pbFile = new ProtobufFile(proto);
 
-  @NgModule({
-    providers: [
-${ proto.serviceList.map(s => `      { provide: ${s.getConfigInjectionTokenName()}, useValue: grpcSettings },`).sort().join('\n')}
-    ],
-  })
-  export class GrpcConfigModule { }
-*/
+      pbFile.print(pbPrinter);
 
-      /* tslint:disable */
-      /* eslint-disable */
-      import { Inject, Injectable, InjectionToken } from '@angular/core';
-      import { GrpcCallType, GrpcClient, GrpcClientSettings, GrpcHandler } from '@ngx-grpc/core';
-      import { BinaryReader, BinaryWriter, ByteSource } from 'google-protobuf';
-      import { AbstractClientBase, Error, GrpcWebClientBase, Metadata, Status } from 'grpc-web';
-      import { Observable } from 'rxjs';
-      ${proto.getImportedDependencies()}
+      files.push({ name: basename + '.ts', content: pbPrinter.finalize() });
 
-      ${types.map(t => t.toString()).join('\n\n')}
-`;
-
-      return {
-        name: proto.getGeneratedFileBaseName() + '.ts',
-        content: prettier.format(generated, { parser: 'typescript', singleQuote: true }),
-      };
-    });
+      return [...res, ...files];
+    }, [] as any[]);
   });
 }
 
