@@ -1,3 +1,37 @@
+## [0.4.1](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.4.0...v0.4.1) (2020-01-10)
+
+
+### Features
+
+* add wkt timestamp helper functions ([3e88b89](https://github.com/ngx-grpc/protoc-gen-ng/commit/3e88b89be0821bf56e2c12647fb04c146197ecdd))
+
+# [0.4.0](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.3.2...v0.4.0) (2020-01-02)
+
+
+### Features
+
+* add explicit type definition for injection tokens ([885bab8](https://github.com/ngx-grpc/protoc-gen-ng/commit/885bab8548ee8014313ea01c7b0b79279b4531c9))
+* improve names transformations ([c2ab777](https://github.com/ngx-grpc/protoc-gen-ng/commit/c2ab777e3d898e2b490450e6629b819e15a6b542))
+
+
+### Performance Improvements
+
+* move all service client config tokens to a separate file to skip loading all generated code into the initial bundle ([40de9d6](https://github.com/ngx-grpc/protoc-gen-ng/commit/40de9d6a80df276f02a6bd1a1af4eba535b01c34))
+* omit passing default values to the binary writer ([15cd3e8](https://github.com/ngx-grpc/protoc-gen-ng/commit/15cd3e8a2cd7b3848ae584439effe6b623ce11e0))
+
+
+### BREAKING CHANGES
+
+* all tokens are moved to a separate *.pbconf.ts file
+* the name transformation is more greedy, some of the class, attribute and method names can be different now
+
+## [0.3.2](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.3.1...v0.3.2) (2019-12-13)
+
+
+### Bug Fixes
+
+* always transform enum values to camel case ([f52144a](https://github.com/ngx-grpc/protoc-gen-ng/commit/f52144a8f426dede9133e24714634484618a822a))
+
 ## [0.3.1](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.3.0...v0.3.1) (2019-12-13)
 
 
