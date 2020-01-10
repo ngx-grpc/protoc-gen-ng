@@ -65,9 +65,9 @@ export class Message {
   }
 
   print(printer: Printer) {
-    printer.addDeps(ExternalDependencies.BinaryReader, ExternalDependencies.BinaryWriter, ExternalDependencies.ByteSource);
+    printer.addDeps(ExternalDependencies.BinaryReader, ExternalDependencies.BinaryWriter, ExternalDependencies.ByteSource, ExternalDependencies.GrpcMessage);
 
-    printer.addLine(`export class ${this.message.name} {
+    printer.addLine(`export class ${this.message.name} implements GrpcMessage {
 
       static toBinary(instance: ${this.message.name}) {
         const writer = new BinaryWriter();

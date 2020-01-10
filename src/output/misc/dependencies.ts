@@ -12,6 +12,7 @@ export const ExternalDependencies = {
   Injectable: new Dependency('@angular/core', 'Injectable'),
   InjectionToken: new Dependency('@angular/core', 'InjectionToken'),
 
+  GrpcMessage: new Dependency('@ngx-grpc/core', 'GrpcMessage'),
   GrpcCallType: new Dependency('@ngx-grpc/core', 'GrpcCallType'),
   GrpcClient: new Dependency('@ngx-grpc/core', 'GrpcClient'),
   GrpcClientSettings: new Dependency('@ngx-grpc/core', 'GrpcClientSettings'),
