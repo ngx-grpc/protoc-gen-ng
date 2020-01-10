@@ -82,6 +82,10 @@ export class Message {
       }
     `);
 
+    if (this.message.name === 'Timestamp' && this.proto.pb_package === 'google.protobuf') {
+      this.printTimestampStaticMethods(printer);
+    }
+
     this.printStaticRefineValues(printer);
     printer.newLine();
 
@@ -113,6 +117,11 @@ export class Message {
     this.printToObject(printer);
 
     printer.addLine('toJSON() { return this.toObject(); }');
+
+    if (this.message.name === 'Timestamp' && this.proto.pb_package === 'google.protobuf') {
+      this.printTimestampMemberMethods(printer);
+    }
+
     printer.addLine('}');
 
     this.printSubTypes(printer);
@@ -208,6 +217,43 @@ export class Message {
     this.message.nestedTypeList.forEach(protoMessage => new Message(this.proto, protoMessage).print(printer));
 
     printer.addLine('}');
+  }
+
+  private printTimestampStaticMethods(printer: Printer) {
+    printer.addLine(`
+      static fromDate(date: Date) {
+        var timestamp = new Timestamp();
+        timestamp.fromDate(date);
+        return timestamp;
+      }
+
+      static fromISOString(isoDate: string) {
+        var timestamp = new Timestamp();
+        timestamp.fromISOString(isoDate);
+        return timestamp;
+      }
+    `);
+  }
+
+  private printTimestampMemberMethods(printer: Printer) {
+    printer.addLine(`
+      fromDate(date: Date) {
+        this.seconds = Math.floor(date.getTime() / 1e3);
+        this.nanos = date.getMilliseconds() * 1e6;
+      }
+
+      toDate() {
+        return new Date((this.seconds || 0) * 1e3 + (this.nanos || 0) / 1e6);
+      }
+
+      fromISOString(isoDate: string) {
+        this.fromDate(new Date(isoDate));
+      }
+
+      toISOString() {
+        return this.toDate().toISOString();
+      }
+    `);
   }
 
 }
