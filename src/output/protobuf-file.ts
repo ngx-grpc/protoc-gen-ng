@@ -1,3 +1,4 @@
+import { basename } from 'path';
 import { Proto } from '../input/proto';
 import { Enum } from './enum';
 import { Message } from './message';
@@ -26,7 +27,9 @@ export class ProtobufFile {
     printer.add(this.proto.getImportedDependencies());
 
     if (serviceClientConfigs.length) {
-      printer.add(`import {${serviceClientConfigs.map(scc => scc.getTokenName()).join(',')}} from './${this.proto.getGeneratedFileBaseName()}conf';`);
+      const fileName = basename(this.proto.getGeneratedFileBaseName());
+
+      printer.add(`import {${serviceClientConfigs.map(scc => scc.getTokenName()).join(',')}} from './${fileName}conf';`);
     }
 
     this.proto.enumTypeList.forEach(protoEnum => {
