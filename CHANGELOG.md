@@ -1,3 +1,15 @@
+## [0.4.2](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.4.1...v0.4.2) (2020-01-10)
+
+
+### Bug Fixes
+
+* use proper path for service client config imports in sub-directories ([d47cdb1](https://github.com/ngx-grpc/protoc-gen-ng/commit/d47cdb1b3e75d1c90f8df0ec9623ea6638b1f1b7))
+
+
+### Features
+
+* add `implements GrpcMessage` for every message class ([4b617a4](https://github.com/ngx-grpc/protoc-gen-ng/commit/4b617a4b91d451cb035c4ea5912ea6b73673f34a))
+
 ## [0.4.1](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.4.0...v0.4.1) (2020-01-10)
 
 
