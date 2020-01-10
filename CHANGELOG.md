@@ -1,3 +1,10 @@
+## [0.4.1](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.4.0...v0.4.1) (2020-01-10)
+
+
+### Features
+
+* add wkt timestamp helper functions ([3e88b89](https://github.com/ngx-grpc/protoc-gen-ng/commit/3e88b89be0821bf56e2c12647fb04c146197ecdd))
+
 # [0.4.0](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.3.2...v0.4.0) (2020-01-02)
 
 
