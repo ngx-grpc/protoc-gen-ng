@@ -1,3 +1,10 @@
+## [0.4.3](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.4.2...v0.4.3) (2020-01-13)
+
+
+### Features
+
+* use RecursivePartial for message constructor input ([5b1be75](https://github.com/ngx-grpc/protoc-gen-ng/commit/5b1be750d8b5cf0a1b0a76cafc33dfb08fdb251d))
+
 ## [0.4.2](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.4.1...v0.4.2) (2020-01-10)
 
 
