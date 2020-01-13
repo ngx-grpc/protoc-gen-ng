@@ -17,6 +17,7 @@ export const ExternalDependencies = {
   GrpcClient: new Dependency('@ngx-grpc/core', 'GrpcClient'),
   GrpcClientSettings: new Dependency('@ngx-grpc/core', 'GrpcClientSettings'),
   GrpcHandler: new Dependency('@ngx-grpc/core', 'GrpcHandler'),
+  RecursivePartial: new Dependency('@ngx-grpc/core', 'RecursivePartial'),
 
   BinaryReader: new Dependency('google-protobuf', 'BinaryReader'),
   BinaryWriter: new Dependency('google-protobuf', 'BinaryWriter'),

@@ -65,7 +65,13 @@ export class Message {
   }
 
   print(printer: Printer) {
-    printer.addDeps(ExternalDependencies.BinaryReader, ExternalDependencies.BinaryWriter, ExternalDependencies.ByteSource, ExternalDependencies.GrpcMessage);
+    printer.addDeps(
+      ExternalDependencies.BinaryReader,
+      ExternalDependencies.BinaryWriter,
+      ExternalDependencies.ByteSource,
+      ExternalDependencies.GrpcMessage,
+      ExternalDependencies.RecursivePartial,
+    );
 
     printer.addLine(`export class ${this.message.name} implements GrpcMessage {
 
@@ -186,7 +192,7 @@ export class Message {
     });
 
     printer.addLine(jsdoc.toString());
-    printer.addLine(`constructor(value?: Partial<${this.message.name}>) {`);
+    printer.addLine(`constructor(value?: RecursivePartial<${this.message.name}>) {`);
     printer.addLine('value = value || {};');
 
     this.messageFields.forEach(f => {
