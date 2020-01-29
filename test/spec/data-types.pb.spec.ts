@@ -42,12 +42,12 @@ describe('data-types.proto', () => {
     expect(msg.double).toBe(0);
     expect(msg.float).toBe(0);
     expect(msg.bytes instanceof Uint8Array && msg.bytes.length === 0).toBeTruthy();
-    expect(msg.int64).toBe(0);
+    expect(msg.int64).toBe('0');
     expect(msg.enum).toBe(0);
     expect(msg.fixed32).toBe(0);
-    expect(msg.fixed64).toBe(0);
+    expect(msg.fixed64).toBe('0');
     expect(msg.uint32).toBe(0);
-    expect(msg.uint64).toBe(0);
+    expect(msg.uint64).toBe('0');
     expect(msg.mapStringString).toEqual({});
     expect(msg.mapInt64Sub).toEqual({});
     expect(msg.mapBoolString).toEqual({});
@@ -85,12 +85,12 @@ describe('data-types.proto', () => {
       double: 0,
       float: 0,
       bytes: new Uint8Array(),
-      int64: 0,
+      int64: '0',
       enum: 0,
       fixed32: 0,
-      fixed64: 0,
+      fixed64: '0',
       uint32: 0,
-      uint64: 0,
+      uint64: '0',
       mapStringString: {},
       mapInt64Sub: {},
       mapBoolString: {},

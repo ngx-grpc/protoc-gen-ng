@@ -8,6 +8,7 @@ import { EnumMessageField } from './fields/enum-message-field';
 import { MapMessageField } from './fields/map-message-field';
 import { MessageMessageField } from './fields/message-message-field';
 import { NumberMessageField } from './fields/number-message-field';
+import { Int64MessageField } from './fields/int64-message-field';
 import { StringMessageField } from './fields/string-message-field';
 import { JSDoc } from './js-doc';
 import { MessageField } from './message-field';
@@ -47,17 +48,18 @@ export class Message {
             return new StringMessageField(this.proto, this.message, field, oneOf);
           case ProtoMessageFieldType.double:
           case ProtoMessageFieldType.fixed32:
-          case ProtoMessageFieldType.fixed64:
           case ProtoMessageFieldType.float:
           case ProtoMessageFieldType.int32:
-          case ProtoMessageFieldType.int64:
           case ProtoMessageFieldType.sfixed32:
-          case ProtoMessageFieldType.sfixed64:
           case ProtoMessageFieldType.sint32:
-          case ProtoMessageFieldType.sint64:
           case ProtoMessageFieldType.uint32:
-          case ProtoMessageFieldType.uint64:
             return new NumberMessageField(this.proto, this.message, field, oneOf);
+          case ProtoMessageFieldType.fixed64:
+          case ProtoMessageFieldType.int64:
+          case ProtoMessageFieldType.sfixed64:
+          case ProtoMessageFieldType.sint64:
+          case ProtoMessageFieldType.uint64:
+            return new Int64MessageField(this.proto, this.message, field, oneOf);
           default: throw new Error('Unknown data type ' + field.type);
         }
       }
@@ -244,12 +246,12 @@ export class Message {
   private printTimestampMemberMethods(printer: Printer) {
     printer.addLine(`
       fromDate(date: Date) {
-        this.seconds = Math.floor(date.getTime() / 1e3);
+        this.seconds = ''+Math.floor(date.getTime() / 1e3);
         this.nanos = date.getMilliseconds() * 1e6;
       }
 
       toDate() {
-        return new Date((this.seconds || 0) * 1e3 + (this.nanos || 0) / 1e6);
+        return new Date(parseInt(this.seconds || '0') * 1e3 + (this.nanos || 0) / 1e6);
       }
 
       fromISOString(isoDate: string) {
