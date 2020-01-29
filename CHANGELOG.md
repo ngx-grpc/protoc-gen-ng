@@ -1,3 +1,10 @@
+## [0.4.4](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.4.3...v0.4.4) (2020-01-29)
+
+
+### Bug Fixes
+
+* use string for 64 bit number fields ([f6f3ca1](https://github.com/ngx-grpc/protoc-gen-ng/commit/f6f3ca1be7aeaab87bbb63eff9e29ed96954f93e))
+
 ## [0.4.3](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.4.2...v0.4.3) (2020-01-13)
 
 
