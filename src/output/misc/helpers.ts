@@ -42,6 +42,11 @@ export function getDataType(proto: Proto, field: ProtoMessageField) {
 
   switch (field.type) {
     case ProtoMessageFieldType.string:
+    case ProtoMessageFieldType.fixed64:
+    case ProtoMessageFieldType.int64:
+    case ProtoMessageFieldType.sfixed64:
+    case ProtoMessageFieldType.sint64:
+    case ProtoMessageFieldType.uint64:
       return 'string' + suffix;
     case ProtoMessageFieldType.bool:
       return 'boolean' + suffix;
@@ -49,16 +54,11 @@ export function getDataType(proto: Proto, field: ProtoMessageField) {
       return 'Uint8Array' + suffix;
     case ProtoMessageFieldType.double:
     case ProtoMessageFieldType.fixed32:
-    case ProtoMessageFieldType.fixed64:
     case ProtoMessageFieldType.float:
     case ProtoMessageFieldType.int32:
-    case ProtoMessageFieldType.int64:
     case ProtoMessageFieldType.sfixed32:
-    case ProtoMessageFieldType.sfixed64:
     case ProtoMessageFieldType.sint32:
-    case ProtoMessageFieldType.sint64:
     case ProtoMessageFieldType.uint32:
-    case ProtoMessageFieldType.uint64:
       return 'number' + suffix;
     default: throw new Error('Unknown data type ' + field.type);
   }

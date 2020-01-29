@@ -8,7 +8,7 @@ import { getDataType } from '../misc/helpers';
 import { Printer } from '../misc/printer';
 import { OneOf } from '../oneof';
 
-export class NumberMessageField implements MessageField {
+export class Int64MessageField implements MessageField {
 
   private attributeName: string;
   private dataType: string;
@@ -26,14 +26,12 @@ export class NumberMessageField implements MessageField {
     this.dataType = getDataType(this.proto, this.messageField);
 
     switch (this.messageField.type) {
-      case ProtoMessageFieldType.double: this.protoDataType = 'Double'; break;
-      case ProtoMessageFieldType.fixed32: this.protoDataType = 'Fixed32'; break;
-      case ProtoMessageFieldType.float: this.protoDataType = 'Float'; break;
-      case ProtoMessageFieldType.int32: this.protoDataType = 'Int32'; break;
-      case ProtoMessageFieldType.sfixed32: this.protoDataType = 'Sfixed32'; break;
-      case ProtoMessageFieldType.sint32: this.protoDataType = 'Sint32'; break;
-      case ProtoMessageFieldType.uint32: this.protoDataType = 'Uint32'; break;
-      default: throw new Error('Unknown number type ' + this.messageField.type);
+      case ProtoMessageFieldType.fixed64: this.protoDataType = 'Fixed64String'; break;
+      case ProtoMessageFieldType.int64: this.protoDataType = 'Int64String'; break;
+      case ProtoMessageFieldType.sfixed64: this.protoDataType = 'Sfixed64String'; break;
+      case ProtoMessageFieldType.sint64: this.protoDataType = 'Sint64String'; break;
+      case ProtoMessageFieldType.uint64: this.protoDataType = 'Uint64String'; break;
+      default: throw new Error('Unknown int64 type ' + this.messageField.type);
     }
   }
 
@@ -79,7 +77,7 @@ export class NumberMessageField implements MessageField {
     } else if (this.isArray) {
       printer.add(`instance.${this.attributeName} = instance.${this.attributeName} || []`);
     } else {
-      printer.add(`instance.${this.attributeName} = instance.${this.attributeName} || 0`);
+      printer.add(`instance.${this.attributeName} = instance.${this.attributeName} || '0'`);
     }
   }
 
