@@ -8,7 +8,7 @@ import { EnumMessageField } from './fields/enum-message-field';
 import { MapMessageField } from './fields/map-message-field';
 import { MessageMessageField } from './fields/message-message-field';
 import { NumberMessageField } from './fields/number-message-field';
-import { Int64MessageField } from './fields/int64-message-field';
+import { Int64MessageField as Number64MessageField } from './fields/number64-message-field';
 import { StringMessageField } from './fields/string-message-field';
 import { JSDoc } from './js-doc';
 import { MessageField } from './message-field';
@@ -59,7 +59,7 @@ export class Message {
           case ProtoMessageFieldType.sfixed64:
           case ProtoMessageFieldType.sint64:
           case ProtoMessageFieldType.uint64:
-            return new Int64MessageField(this.proto, this.message, field, oneOf);
+            return new Number64MessageField(this.proto, this.message, field, oneOf);
           default: throw new Error('Unknown data type ' + field.type);
         }
       }
