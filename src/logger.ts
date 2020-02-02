@@ -1,12 +1,12 @@
 import * as winston from 'winston';
-import { Config } from './config';
+import { Services } from './services';
 
-export const Logger = new class {
+export class Logger {
 
   private logger?: winston.Logger;
 
   constructor() {
-    if (Config.debug) {
+    if (Services.Config.debug) {
       this.logger = winston.createLogger({
         format: winston.format.combine(
           winston.format.timestamp({

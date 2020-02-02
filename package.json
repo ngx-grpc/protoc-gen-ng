@@ -1,9 +1,8 @@
 {
   "name": "@ngx-grpc/protoc-gen-ng",
-  "version": "0.1.1",
+  "description": "gRPC code generator for Angular",
   "author": "smnbbrv",
   "license": "MIT",
-  "description": "",
   "main": "./dist/main.js",
   "bin": {
     "protoc-gen-ng": "./dist/main.js"
@@ -22,16 +21,16 @@
     "build": "rimraf dist && tsc -p tsconfig.build.json && chmod +x dist/main.js",
     "lint": "eslint src/**/*.ts",
     "test": "jest",
-    "test:watch": "jest --watch",
+    "test:watch": "jest --watchAll",
     "test:coverage": "jest --coverage",
-    "test:generate": "mkdir -p ./test/out && rimraf ./test/out/* && protoc --plugin=protoc-gen-ng=$(pwd)/dist/main.js --ng_out=./test/out -I test/proto $(find test/proto -iname \"*.proto\")",
+    "test:generate": "mkdir -p ./test/out && rimraf ./test/out/* && protoc --plugin=protoc-gen-ng=$(pwd)/dist/main.js --ng_out=worker=true,debug=true:./test/out -I test/proto $(find test/proto -iname \"*.proto\")",
     "test:generate-grpc-web": "mkdir -p ./test/out-grpc-web && rimraf ./test/out-grpc-web/* && protoc -I=test/proto --js_out=import_style=commonjs:test/out-grpc-web --grpc-web_out=import_style=typescript,mode=grpcweb:test/out-grpc-web $(find test/proto -iname \"*.proto\")",
+    "copy:ngx-grpc": "cp -R ../ngx-grpc/dist node_modules/@ngx-grpc",
     "wktgen:macosx": "mkdir -p dev-null && export WKT=$(dirname $(dirname $(greadlink -f $(which protoc))))/include && protoc --plugin=protoc-gen-wkt=$(pwd)/wktgen.js --wkt_out=./dev-null -I $WKT $(find $WKT -iname \"*.proto\")",
     "release": "semantic-release"
   },
   "devDependencies": {
     "@angular/core": "^8.2.14",
-    "@ngx-grpc/core": "^0.1.4",
     "@semantic-release/changelog": "^3.0.6",
     "@semantic-release/commit-analyzer": "^6.3.3",
     "@semantic-release/git": "^7.0.18",

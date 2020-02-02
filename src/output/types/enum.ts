@@ -1,7 +1,7 @@
-import { Proto } from '../input/proto';
-import { ProtoEnum } from '../input/proto-enum';
-import { camelizeSafe, classify } from '../utils';
-import { Printer } from './misc/printer';
+import { Proto } from '../../input/proto';
+import { ProtoEnum } from '../../input/proto-enum';
+import { camelizeSafe, classify } from '../../utils';
+import { Printer } from '../misc/printer';
 
 export class Enum {
 

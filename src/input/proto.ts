@@ -1,4 +1,4 @@
-import { Logger } from '../logger';
+import { Services } from '../services';
 import { dasherize } from '../utils';
 import { ProtoEnum } from './proto-enum';
 import { ProtoMessage } from './proto-message';
@@ -91,7 +91,7 @@ export class Proto {
       return meta;
     }
 
-    Logger.debug(`Cannot find type ${pbType} in proto ${this.name}`);
+    Services.Logger.debug(`Cannot find type ${pbType} in proto ${this.name}`);
     throw new Error('Error finding ' + pbType);
   }
 
@@ -102,12 +102,12 @@ export class Proto {
     return name + index;
   }
 
-  getRelativeTypeName(pbType: string) {
+  getRelativeTypeName(pbType: string, thisProtoPackageName = '') {
     const meta = this.resolveTypeMetadata(pbType);
     const [, , /* packageName */, typeName] = pbType.match(/^\.(([a-z0-9.]*)\.)?([A-Za-z0-9.]+$)/) as RegExpMatchArray;
 
     if (meta.proto === this) {
-      return typeName;
+      return (thisProtoPackageName ? thisProtoPackageName + '.' : '') + typeName;
     }
 
     return this.getDependencyPackageName(meta.proto) + '.' + typeName;

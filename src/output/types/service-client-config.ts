@@ -1,8 +1,8 @@
-import { Proto } from '../input/proto';
-import { ProtoService } from '../input/proto-service';
-import { pascalize } from '../utils';
-import { ExternalDependencies } from './misc/dependencies';
-import { Printer } from './misc/printer';
+import { Proto } from '../../input/proto';
+import { ProtoService } from '../../input/proto-service';
+import { pascalize } from '../../utils';
+import { ExternalDependencies } from '../misc/dependencies';
+import { Printer } from '../misc/printer';
 
 export class ServiceClientConfig {
 

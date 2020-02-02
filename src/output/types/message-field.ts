@@ -1,4 +1,4 @@
-import { Printer } from './misc/printer';
+import { Printer } from '../misc/printer';
 
 export interface MessageField {
   printFromBinaryReader(printer: Printer): void;

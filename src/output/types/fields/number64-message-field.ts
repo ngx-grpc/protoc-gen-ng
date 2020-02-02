@@ -1,17 +1,18 @@
-import { Proto } from '../../input/proto';
-import { ProtoMessage } from '../../input/proto-message';
-import { ProtoMessageField } from '../../input/proto-message-field';
-import { ProtoMessageFieldCardinality } from '../../input/types';
-import { camelizeSafe } from '../../utils';
+import { Proto } from '../../../input/proto';
+import { ProtoMessage } from '../../../input/proto-message';
+import { ProtoMessageField } from '../../../input/proto-message-field';
+import { ProtoMessageFieldCardinality, ProtoMessageFieldType } from '../../../input/types';
+import { camelizeSafe } from '../../../utils';
+import { getDataType } from '../../misc/helpers';
+import { Printer } from '../../misc/printer';
 import { MessageField } from '../message-field';
-import { getDataType } from '../misc/helpers';
-import { Printer } from '../misc/printer';
 import { OneOf } from '../oneof';
 
-export class BytesMessageField implements MessageField {
+export class Int64MessageField implements MessageField {
 
   private attributeName: string;
   private dataType: string;
+  private protoDataType: string; // used in reader and writer as part of the method call
   private isArray: boolean;
 
   constructor(
@@ -23,10 +24,19 @@ export class BytesMessageField implements MessageField {
     this.attributeName = camelizeSafe(this.messageField.name);
     this.isArray = this.messageField.label === ProtoMessageFieldCardinality.repeated;
     this.dataType = getDataType(this.proto, this.messageField);
+
+    switch (this.messageField.type) {
+      case ProtoMessageFieldType.fixed64: this.protoDataType = 'Fixed64String'; break;
+      case ProtoMessageFieldType.int64: this.protoDataType = 'Int64String'; break;
+      case ProtoMessageFieldType.sfixed64: this.protoDataType = 'Sfixed64String'; break;
+      case ProtoMessageFieldType.sint64: this.protoDataType = 'Sint64String'; break;
+      case ProtoMessageFieldType.uint64: this.protoDataType = 'Uint64String'; break;
+      default: throw new Error('Unknown int64 type ' + this.messageField.type);
+    }
   }
 
   printFromBinaryReader(printer: Printer) {
-    const readerCall = 'reader.readBytes()';
+    const readerCall = 'reader.read' + this.protoDataType + '()';
 
     if (this.isArray) {
       printer.add(`case ${this.messageField.number}: (instance.${this.attributeName} = instance.${this.attributeName} || []).push(${readerCall});`);
@@ -38,9 +48,15 @@ export class BytesMessageField implements MessageField {
   }
 
   printToBinaryWriter(printer: Printer) {
-    printer.add(`if (instance.${this.attributeName} && instance.${this.attributeName}.length) {
-      writer.write${this.isArray ? 'Repeated' : ''}Bytes(${this.messageField.number}, instance.${this.attributeName});
-    }`);
+    if (this.isArray) {
+      printer.add(`if (instance.${this.attributeName} && instance.${this.attributeName}.length) {
+        writer.writeRepeated${this.protoDataType}(${this.messageField.number}, instance.${this.attributeName});
+      }`);
+    } else {
+      printer.add(`if (instance.${this.attributeName}) {
+        writer.write${this.protoDataType}(${this.messageField.number}, instance.${this.attributeName});
+      }`);
+    }
   }
 
   printPrivateAttribute(printer: Printer) {
@@ -49,7 +65,7 @@ export class BytesMessageField implements MessageField {
 
   printInitializer(printer: Printer) {
     if (this.isArray) {
-      printer.add(`this.${this.attributeName} = (value.${this.attributeName} || []).map(b => b ? b.subarray(0) : new Uint8Array());`);
+      printer.add(`this.${this.attributeName} = (value.${this.attributeName} || []).slice();`);
     } else {
       printer.add(`this.${this.attributeName} = value.${this.attributeName}`);
     }
@@ -61,7 +77,7 @@ export class BytesMessageField implements MessageField {
     } else if (this.isArray) {
       printer.add(`instance.${this.attributeName} = instance.${this.attributeName} || []`);
     } else {
-      printer.add(`instance.${this.attributeName} = instance.${this.attributeName} || new Uint8Array()`);
+      printer.add(`instance.${this.attributeName} = instance.${this.attributeName} || '0'`);
     }
   }
 
@@ -78,9 +94,9 @@ export class BytesMessageField implements MessageField {
 
   printToObjectMapping(printer: Printer) {
     if (this.isArray) {
-      printer.add(`${this.attributeName}: (this.${this.attributeName} || []).map(b => b ? b.subarray(0) : new Uint8Array()),`);
+      printer.add(`${this.attributeName}: (this.${this.attributeName} || []).slice(),`);
     } else {
-      printer.add(`${this.attributeName}: this.${this.attributeName} ? this.${this.attributeName}.subarray(0) : new Uint8Array(),`);
+      printer.add(`${this.attributeName}: this.${this.attributeName},`);
     }
   }
 

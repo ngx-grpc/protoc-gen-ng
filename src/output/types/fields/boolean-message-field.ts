@@ -1,14 +1,14 @@
-import { Proto } from '../../input/proto';
-import { ProtoMessage } from '../../input/proto-message';
-import { ProtoMessageField } from '../../input/proto-message-field';
-import { ProtoMessageFieldCardinality } from '../../input/types';
-import { camelizeSafe } from '../../utils';
+import { Proto } from '../../../input/proto';
+import { ProtoMessage } from '../../../input/proto-message';
+import { ProtoMessageField } from '../../../input/proto-message-field';
+import { ProtoMessageFieldCardinality } from '../../../input/types';
+import { camelizeSafe } from '../../../utils';
+import { getDataType } from '../../misc/helpers';
+import { Printer } from '../../misc/printer';
 import { MessageField } from '../message-field';
-import { getDataType } from '../misc/helpers';
-import { Printer } from '../misc/printer';
 import { OneOf } from '../oneof';
 
-export class StringMessageField implements MessageField {
+export class BooleanMessageField implements MessageField {
 
   private attributeName: string;
   private dataType: string;
@@ -26,7 +26,7 @@ export class StringMessageField implements MessageField {
   }
 
   printFromBinaryReader(printer: Printer) {
-    const readerCall = 'reader.readString()';
+    const readerCall = 'reader.readBool()';
 
     if (this.isArray) {
       printer.add(`case ${this.messageField.number}: (instance.${this.attributeName} = instance.${this.attributeName} || []).push(${readerCall});`);
@@ -40,11 +40,11 @@ export class StringMessageField implements MessageField {
   printToBinaryWriter(printer: Printer) {
     if (this.isArray) {
       printer.add(`if (instance.${this.attributeName} && instance.${this.attributeName}.length) {
-        writer.writeRepeatedString(${this.messageField.number}, instance.${this.attributeName});
+        writer.writeRepeatedBool(${this.messageField.number}, instance.${this.attributeName});
       }`);
     } else {
       printer.add(`if (instance.${this.attributeName}) {
-        writer.writeString(${this.messageField.number}, instance.${this.attributeName});
+        writer.writeBool(${this.messageField.number}, instance.${this.attributeName});
       }`);
     }
   }
@@ -67,7 +67,7 @@ export class StringMessageField implements MessageField {
     } else if (this.isArray) {
       printer.add(`instance.${this.attributeName} = instance.${this.attributeName} || []`);
     } else {
-      printer.add(`instance.${this.attributeName} = instance.${this.attributeName} || ''`);
+      printer.add(`instance.${this.attributeName} = instance.${this.attributeName} || false`);
     }
   }
 

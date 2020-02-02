@@ -1,12 +1,10 @@
 import { basename } from 'path';
-import { Proto } from '../input/proto';
-import { Enum } from './enum';
-import { Message } from './message';
-import { Printer } from './misc/printer';
-import { ServiceClient } from './service-client';
-import { ServiceClientConfig } from './service-client-config';
+import { Proto } from '../../input/proto';
+import { Printer } from '../misc/printer';
+import { ServiceClient } from '../types/service-client';
+import { ServiceClientConfig } from '../types/service-client-config';
 
-export class ProtobufFile {
+export class PbscFile {
 
   constructor(
     private proto: Proto,
@@ -24,25 +22,15 @@ export class ProtobufFile {
       serviceClients.push(serviceClient);
     });
 
+    const fileName = basename(this.proto.getGeneratedFileBaseName());
+
+    printer.addLine(`import * as thisProto from './${fileName}';`);
+
     printer.add(this.proto.getImportedDependencies());
 
     if (serviceClientConfigs.length) {
-      const fileName = basename(this.proto.getGeneratedFileBaseName());
-
       printer.add(`import {${serviceClientConfigs.map(scc => scc.getTokenName()).join(',')}} from './${fileName}conf';`);
     }
-
-    this.proto.enumTypeList.forEach(protoEnum => {
-      const _enum = new Enum(this.proto, protoEnum);
-
-      _enum.print(printer);
-    });
-
-    this.proto.messageTypeList.forEach(protoMessage => {
-      const message = new Message(this.proto, protoMessage);
-
-      message.print(printer);
-    });
 
     serviceClients.forEach(serviceClient => serviceClient.print(printer));
   }

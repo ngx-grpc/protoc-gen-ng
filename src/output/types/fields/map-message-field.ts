@@ -1,11 +1,11 @@
-import { Proto } from '../../input/proto';
-import { ProtoMessage } from '../../input/proto-message';
-import { ProtoMessageField } from '../../input/proto-message-field';
-import { ProtoMessageFieldType } from '../../input/types';
-import { camelizeSafe } from '../../utils';
+import { Proto } from '../../../input/proto';
+import { ProtoMessage } from '../../../input/proto-message';
+import { ProtoMessageField } from '../../../input/proto-message-field';
+import { ProtoMessageFieldType } from '../../../input/types';
+import { camelizeSafe } from '../../../utils';
+import { getDataType, getMapKeyValueFields } from '../../misc/helpers';
+import { Printer } from '../../misc/printer';
 import { MessageField } from '../message-field';
-import { getDataType, getMapKeyValueFields } from '../misc/helpers';
-import { Printer } from '../misc/printer';
 import { OneOf } from '../oneof';
 
 export class MapMessageField implements MessageField {

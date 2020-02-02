@@ -1,27 +1,28 @@
-import { GrpcHandler } from '@ngx-grpc/core';
+import { GrpcHandler, GrpcStandardClientFactory } from '@ngx-grpc/core';
 import 'jest';
-import * as noPackage from '../out/no-package.pb';
-import * as noPackageConf from '../out/no-package.pbconf';
+import * as noPackagePb from '../out/no-package.pb';
+import * as noPackagePbconf from '../out/no-package.pbconf';
+import * as noPackagePbsc from '../out/no-package.pbsc';
 
 describe('no-package.proto', () => {
 
   it('should produce TestRequest', () => {
-    expect(noPackage.TestRequest).toBeTruthy();
-    expect(new noPackage.TestRequest()).toBeTruthy();
+    expect(noPackagePb.TestRequest).toBeTruthy();
+    expect(new noPackagePb.TestRequest()).toBeTruthy();
   });
 
   it('should produce TestResponse', () => {
-    expect(noPackage.TestResponse).toBeTruthy();
-    expect(new noPackage.TestResponse()).toBeTruthy();
+    expect(noPackagePb.TestResponse).toBeTruthy();
+    expect(new noPackagePb.TestResponse()).toBeTruthy();
   });
 
   it('should produce GRPC_TEST_SERVICE_CLIENT_SETTINGS', () => {
-    expect(noPackageConf.GRPC_TEST_SERVICE_CLIENT_SETTINGS).toBeTruthy();
+    expect(noPackagePbconf.GRPC_TEST_SERVICE_CLIENT_SETTINGS).toBeTruthy();
   });
 
   it('should produce TestServiceClient', () => {
-    expect(noPackage.TestServiceClient).toBeTruthy();
-    expect(new noPackage.TestServiceClient({ host: 'test' }, new GrpcHandler([]))).toBeTruthy();
+    expect(noPackagePbsc.TestServiceClient).toBeTruthy();
+    expect(new noPackagePbsc.TestServiceClient({ host: 'test' }, new GrpcStandardClientFactory(), new GrpcHandler([]))).toBeTruthy();
   });
 
 });

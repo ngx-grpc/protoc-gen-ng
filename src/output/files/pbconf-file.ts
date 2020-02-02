@@ -1,8 +1,8 @@
-import { Proto } from '../input/proto';
-import { Printer } from './misc/printer';
-import { ServiceClientConfig } from './service-client-config';
+import { Proto } from '../../input/proto';
+import { Printer } from '../misc/printer';
+import { ServiceClientConfig } from '../types/service-client-config';
 
-export class ConfigFile {
+export class PbConfFile {
 
   constructor(
     private proto: Proto,

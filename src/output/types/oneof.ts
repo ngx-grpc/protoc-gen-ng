@@ -1,11 +1,11 @@
-import { Proto } from '../input/proto';
-import { ProtoEnum } from '../input/proto-enum';
-import { ProtoMessage } from '../input/proto-message';
-import { ProtoMessageField } from '../input/proto-message-field';
-import { ProtoOneof } from '../input/proto-oneof';
-import { camelizeSafe, classify } from '../utils';
+import { Proto } from '../../input/proto';
+import { ProtoEnum } from '../../input/proto-enum';
+import { ProtoMessage } from '../../input/proto-message';
+import { ProtoMessageField } from '../../input/proto-message-field';
+import { ProtoOneof } from '../../input/proto-oneof';
+import { camelizeSafe, classify } from '../../utils';
+import { Printer } from '../misc/printer';
 import { Enum } from './enum';
-import { Printer } from './misc/printer';
 
 export class OneOf {
 

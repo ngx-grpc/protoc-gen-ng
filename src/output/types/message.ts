@@ -1,6 +1,9 @@
-import { Proto } from '../input/proto';
-import { ProtoMessage } from '../input/proto-message';
-import { ProtoMessageFieldType } from '../input/types';
+import { Proto } from '../../input/proto';
+import { ProtoMessage } from '../../input/proto-message';
+import { ProtoMessageFieldType } from '../../input/types';
+import { ExternalDependencies } from '../misc/dependencies';
+import { isFieldMap, isFieldMessage } from '../misc/helpers';
+import { Printer } from '../misc/printer';
 import { Enum } from './enum';
 import { BooleanMessageField } from './fields/boolean-message-field';
 import { BytesMessageField } from './fields/bytes-message-field';
@@ -12,9 +15,6 @@ import { Int64MessageField as Number64MessageField } from './fields/number64-mes
 import { StringMessageField } from './fields/string-message-field';
 import { JSDoc } from './js-doc';
 import { MessageField } from './message-field';
-import { ExternalDependencies } from './misc/dependencies';
-import { isFieldMap, isFieldMessage } from './misc/helpers';
-import { Printer } from './misc/printer';
 import { OneOf } from './oneof';
 
 export class Message {

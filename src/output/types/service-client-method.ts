@@ -1,10 +1,10 @@
-import { Proto } from '../input/proto';
-import { ProtoService } from '../input/proto-service';
-import { ServiceMethod } from '../input/proto-service-method';
-import { camelizeSafe } from '../utils';
+import { Proto } from '../../input/proto';
+import { ProtoService } from '../../input/proto-service';
+import { ServiceMethod } from '../../input/proto-service-method';
+import { camelizeSafe } from '../../utils';
+import { ExternalDependencies } from '../misc/dependencies';
+import { Printer } from '../misc/printer';
 import { JSDoc } from './js-doc';
-import { ExternalDependencies } from './misc/dependencies';
-import { Printer } from './misc/printer';
 
 export class ServiceClientMethod {
 
@@ -26,8 +26,8 @@ export class ServiceClientMethod {
     }
 
     const serviceUrlPrefix = this.proto.pb_package ? this.proto.pb_package + '.' : '';
-    const inputType = this.proto.getRelativeTypeName(this.serviceMethod.inputType);
-    const outputType = this.proto.getRelativeTypeName(this.serviceMethod.outputType);
+    const inputType = this.proto.getRelativeTypeName(this.serviceMethod.inputType, 'thisProto');
+    const outputType = this.proto.getRelativeTypeName(this.serviceMethod.outputType, 'thisProto');
     const jsdoc = new JSDoc();
 
     jsdoc.setDescription(`${this.serviceMethod.serverStreaming ? 'Server streaming' : 'Unary'} RPC`);
@@ -38,8 +38,8 @@ export class ServiceClientMethod {
 
     printer.add(`
       ${jsdoc.toString()}
-      ${camelizeSafe(this.serviceMethod.name)}(requestData: ${inputType}, requestMetadata: Metadata = {}) {
-        return this.handler.handle({
+      ${camelizeSafe(this.serviceMethod.name)}(requestData: ${inputType}, requestMetadata: Metadata = {}): Observable<${outputType}${this.serviceMethod.serverStreaming ? ' | Status' : ''}> {
+        return this.handler.handle${this.serviceMethod.serverStreaming ? 'ServerStream' : 'Unary'}({
           type: GrpcCallType.${this.serviceMethod.serverStreaming ? 'serverStream' : 'unary'},
           client: this.client,
           path: '/${serviceUrlPrefix}${this.service.name}/${this.serviceMethod.name}',
@@ -47,7 +47,7 @@ export class ServiceClientMethod {
           requestMetadata,
           requestClass: ${inputType},
           responseClass: ${outputType},
-        }) as Observable<${outputType}${this.serviceMethod.serverStreaming ? ' | Status' : ''}>;
+        });
       }
     `);
   }
