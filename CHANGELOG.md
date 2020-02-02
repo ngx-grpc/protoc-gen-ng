@@ -1,3 +1,15 @@
+# [0.5.0](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.4.4...v0.5.0) (2020-02-02)
+
+
+### Features
+
+* add worker client support ([dc94497](https://github.com/ngx-grpc/protoc-gen-ng/commit/dc94497cf1d1f49211154d521fd9d9abc68b1f73))
+
+
+### BREAKING CHANGES
+
+* all service clients are from now on generated into a separate file *.pbsc.ts
+
 ## [0.4.4](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.4.3...v0.4.4) (2020-01-29)
 
 
