@@ -16,30 +16,43 @@ export class ServiceClientMethod {
 
   print(printer: Printer) {
     printer.addDeps(
-      ExternalDependencies.Metadata,
       ExternalDependencies.GrpcCallType,
+      ExternalDependencies.GrpcEvent,
+      ExternalDependencies.Metadata,
       ExternalDependencies.Observable,
+      ExternalDependencies.takeMessages,
+      ExternalDependencies.throwStatusErrors,
     );
-
-    if (this.serviceMethod.serverStreaming) {
-      printer.addDeps(ExternalDependencies.Status);
-    }
 
     const serviceUrlPrefix = this.proto.pb_package ? this.proto.pb_package + '.' : '';
     const inputType = this.proto.getRelativeTypeName(this.serviceMethod.inputType, 'thisProto');
     const outputType = this.proto.getRelativeTypeName(this.serviceMethod.outputType, 'thisProto');
-    const jsdoc = new JSDoc();
 
-    jsdoc.setDescription(`${this.serviceMethod.serverStreaming ? 'Server streaming' : 'Unary'} RPC`);
-    jsdoc.addParam({ type: inputType, name: 'request', description: 'Request message' });
-    jsdoc.addParam({ type: 'Metadata', name: 'metadata', description: 'Additional data' });
-    jsdoc.setReturn(outputType);
-    jsdoc.setDeprecation(!!this.serviceMethod.options && this.serviceMethod.options.deprecated);
+    const jsdocMessagesOnly = new JSDoc();
+
+    jsdocMessagesOnly.setDescription(`${this.serviceMethod.serverStreaming ? 'Server streaming' : 'Unary'} RPC. Emits messages and throws errors on non-zero status codes`);
+    jsdocMessagesOnly.addParam({ type: inputType, name: 'request', description: 'Request message' });
+    jsdocMessagesOnly.addParam({ type: 'Metadata', name: 'metadata', description: 'Additional data' });
+    jsdocMessagesOnly.setReturn(`Observable<${outputType}>`);
+    jsdocMessagesOnly.setDeprecation(!!this.serviceMethod.options && this.serviceMethod.options.deprecated);
+
+    const jsdocEvents = new JSDoc();
+
+    jsdocEvents.setDescription(`${this.serviceMethod.serverStreaming ? 'Server streaming' : 'Unary'} RPC. Emits data and status events; does not throw errors by design`);
+    jsdocEvents.addParam({ type: inputType, name: 'request', description: 'Request message' });
+    jsdocEvents.addParam({ type: 'Metadata', name: 'metadata', description: 'Additional data' });
+    jsdocEvents.setReturn(`Observable<GrpcEvent<${outputType}>>`);
+    jsdocEvents.setDeprecation(!!this.serviceMethod.options && this.serviceMethod.options.deprecated);
 
     printer.add(`
-      ${jsdoc.toString()}
-      ${camelizeSafe(this.serviceMethod.name)}(requestData: ${inputType}, requestMetadata: Metadata = {}): Observable<${outputType}${this.serviceMethod.serverStreaming ? ' | Status' : ''}> {
-        return this.handler.handle${this.serviceMethod.serverStreaming ? 'ServerStream' : 'Unary'}({
+      ${jsdocMessagesOnly.toString()}
+      ${camelizeSafe(this.serviceMethod.name)}(requestData: ${inputType}, requestMetadata: Metadata = {}): Observable<${outputType}> {
+        return this.${camelizeSafe(this.serviceMethod.name)}$eventStream(requestData, requestMetadata).pipe(throwStatusErrors(), takeMessages());
+      }
+
+      ${jsdocEvents.toString()}
+      ${camelizeSafe(this.serviceMethod.name)}$eventStream(requestData: ${inputType}, requestMetadata: Metadata = {}): Observable<GrpcEvent<${outputType}>> {
+        return this.handler.handle({
           type: GrpcCallType.${this.serviceMethod.serverStreaming ? 'serverStream' : 'unary'},
           client: this.client,
           path: '/${serviceUrlPrefix}${this.service.name}/${this.serviceMethod.name}',

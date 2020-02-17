@@ -20,10 +20,13 @@ const ngxGrpcCommon = {
   GrpcClientSettings: new Dependency('@ngx-grpc/common', 'GrpcClientSettings'),
   GrpcMessage: new Dependency('@ngx-grpc/common', 'GrpcMessage'),
   RecursivePartial: new Dependency('@ngx-grpc/common', 'RecursivePartial'),
+  GrpcEvent: new Dependency('@ngx-grpc/common', 'GrpcEvent'),
 };
 
 const ngxGrpcCore = {
   GrpcHandler: new Dependency('@ngx-grpc/core', 'GrpcHandler'),
+  takeMessages: new Dependency('@ngx-grpc/core', 'takeMessages'),
+  throwStatusErrors: new Dependency('@ngx-grpc/core', 'throwStatusErrors'),
   GRPC_CLIENT_FACTORY: new Dependency('@ngx-grpc/core', 'GRPC_CLIENT_FACTORY'),
 };
 
