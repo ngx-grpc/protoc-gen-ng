@@ -1,3 +1,15 @@
+# [0.6.0](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.5.0...v0.6.0) (2020-02-17)
+
+
+### Features
+
+* generate corresponding event stream for each service client method ([e8715b7](https://github.com/ngx-grpc/protoc-gen-ng/commit/e8715b76e1a76bff94db6dd12be1da28bc4fc9bf))
+
+
+### BREAKING CHANGES
+
+* use GrpcEvent as return type, require an upgrade of the ngx-grpc libraries to 0.3.0
+
 # [0.5.0](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.4.4...v0.5.0) (2020-02-02)
 
 
