@@ -1,3 +1,10 @@
+## [0.6.1](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.6.0...v0.6.1) (2020-02-27)
+
+
+### Bug Fixes
+
+* generate all imported proto files ([8884578](https://github.com/ngx-grpc/protoc-gen-ng/commit/8884578b95d11a236021010d7ee5adb1a9613daa))
+
 # [0.6.0](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.5.0...v0.6.0) (2020-02-17)
 
 
