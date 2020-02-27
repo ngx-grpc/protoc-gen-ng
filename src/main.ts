@@ -12,14 +12,12 @@ import { PbscFile } from './output/files/pbsc-file';
 import { PbwscFile } from './output/files/pbwsc-file';
 import { Printer } from './output/misc/printer';
 import { Services } from './services';
-import wkt from './wkt.meta.json';
 
 function main() {
   CodeGeneratorRequest()
     .then(r => {
       const protocInput = r.toObject()
-      const filesToGenerate = protocInput.protoFileList.filter(p => protocInput.fileToGenerateList.indexOf(p.name) !== -1);
-      const protos = [...(wkt as unknown as Proto[]), ...filesToGenerate].map(proto => new Proto(proto));
+      const protos = protocInput.protoFileList.map(proto => new Proto(proto));
 
       Services.Config = Config.fromParameter(protocInput.parameter);
       Services.Logger = new Logger();
