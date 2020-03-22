@@ -19,9 +19,11 @@ export class ServiceClient {
     printer.addDeps(
       ExternalDependencies.GrpcClient,
       ExternalDependencies.GrpcClientSettings,
+      ExternalDependencies.GrpcClientDefaultSettings,
       ExternalDependencies.GrpcHandler,
       ExternalDependencies.Inject,
       ExternalDependencies.Injectable,
+      ExternalDependencies.Optional,
       ExternalDependencies.GrpcClientFactory,
       ExternalDependencies.GRPC_CLIENT_FACTORY,
     );
@@ -37,10 +39,15 @@ export class ServiceClient {
         private client: GrpcClient;
 
         constructor(
-          @Inject(${tokenName}) settings: GrpcClientSettings,
+          @Optional() @Inject(${tokenName}) clientSettings: GrpcClientSettings | undefined,
+          @Optional() @Inject(GRPC_SERVICE_DEFAULT_SETTINGS) defaultSettings: GrpcClientSettings | undefined,
           @Inject(GRPC_CLIENT_FACTORY) clientFactory: GrpcClientFactory,
           private handler: GrpcHandler,
         ) {
+          if (defaultSettings === undefined && clientSettings === undefined) {
+            throw new Error('Either GRPC_SERVICE_DEFAULT_SETTINGS or ${tokenName} or both should be provided');
+          }
+          const settings = {...({} || defaultSettings), ...({} || clientSettings)} as GrpcClientSettings;
           this.client = clientFactory.createClient('${serviceId}', settings);
         }
     `);

@@ -100,4 +100,7 @@ export class Int64MessageField implements MessageField {
     }
   }
 
+  printMessageInterfaceField(printer: Printer) {
+    printer.add(`${this.attributeName}?: ${this.dataType};`);
+  }
 }

@@ -13,8 +13,8 @@ describe('no-package.proto', () => {
 
   it('should produce TestServiceClient', () => {
     expect(deprecatedpbsc.TestServiceClient).toBeTruthy();
-    expect(new deprecatedpbsc.TestServiceClient({ host: 'test' }, new GrpcStandardClientFactory(), new GrpcHandler([]))).toBeTruthy();
-    expect(new deprecatedpbsc.TestServiceClient({ host: 'test' }, new GrpcStandardClientFactory(), new GrpcHandler([])).test).toBeTruthy();
+    expect(new deprecatedpbsc.TestServiceClient({ host: 'test' }, undefined, new GrpcStandardClientFactory(), new GrpcHandler([]))).toBeTruthy();
+    expect(new deprecatedpbsc.TestServiceClient({ host: 'test' }, undefined, new GrpcStandardClientFactory(), new GrpcHandler([])).test).toBeTruthy();
   });
 
 });

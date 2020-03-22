@@ -22,7 +22,7 @@ describe('no-package.proto', () => {
 
   it('should produce TestServiceClient', () => {
     expect(noPackagePbsc.TestServiceClient).toBeTruthy();
-    expect(new noPackagePbsc.TestServiceClient({ host: 'test' }, new GrpcStandardClientFactory(), new GrpcHandler([]))).toBeTruthy();
+    expect(new noPackagePbsc.TestServiceClient({ host: 'test' }, undefined,  new GrpcStandardClientFactory(), new GrpcHandler([]))).toBeTruthy();
   });
 
 });

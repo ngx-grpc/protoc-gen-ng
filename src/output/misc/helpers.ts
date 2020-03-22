@@ -3,6 +3,10 @@ import { ProtoMessage } from '../../input/proto-message';
 import { ProtoMessageField } from '../../input/proto-message-field';
 import { ProtoMessageFieldCardinality, ProtoMessageFieldType } from '../../input/types';
 
+export function isFieldMessage(field: ProtoMessageField) {
+  return field.type === ProtoMessageFieldType.message || field.type === ProtoMessageFieldType.group;
+}
+
 export function isFieldMap(proto: Proto, field: ProtoMessageField) {
   if (isFieldMessage(field)) {
     const msg = proto.resolveTypeMetadata(field.typeName).message;
@@ -23,21 +27,29 @@ export function getMapKeyValueFields(proto: Proto, field: ProtoMessageField) {
   return [key, value];
 }
 
-export function isFieldMessage(field: ProtoMessageField) {
-  return field.type === ProtoMessageFieldType.message || field.type === ProtoMessageFieldType.group;
-}
-
-export function getDataType(proto: Proto, field: ProtoMessageField) {
+export function getDataType(proto: Proto, field: ProtoMessageField, useInterfaceNotation = false) {
   if (isFieldMap(proto, field)) {
     const [key, value] = getMapKeyValueFields(proto, field);
 
-    return `{ [prop: ${key.type === ProtoMessageFieldType.string ? 'string' : 'number'}]: ${getDataType(proto, value)}; }`;
+    return `{ [prop: ${key.type === ProtoMessageFieldType.string ? 'string' : 'number'}]: ${getDataType(proto, value, useInterfaceNotation)}; }`;
   }
 
   const suffix = field.label === ProtoMessageFieldCardinality.repeated ? '[]' : '';
 
-  if (field.type === ProtoMessageFieldType.enum || isFieldMessage(field)) {
+  if (field.type === ProtoMessageFieldType.enum) {
     return proto.getRelativeTypeName(field.typeName) + suffix;
+  }
+
+  if (isFieldMessage(field)) {
+    const typeName = proto.getRelativeTypeName(field.typeName) + suffix;
+    if (useInterfaceNotation) {
+      const lastDotIndex = typeName.lastIndexOf('.');
+      if (lastDotIndex > -1) {
+        return typeName.slice(0, lastDotIndex + 1) + 'I' + typeName.slice(lastDotIndex + 1);
+      }
+      return `I${typeName}`;
+    }
+    return typeName;
   }
 
   switch (field.type) {

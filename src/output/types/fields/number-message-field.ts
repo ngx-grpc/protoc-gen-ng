@@ -101,5 +101,7 @@ export class NumberMessageField implements MessageField {
       printer.add(`${this.attributeName}: this.${this.attributeName},`);
     }
   }
-
+  printMessageInterfaceField(printer: Printer) {
+    printer.add(`${this.attributeName}?: ${this.dataType};`);
+  }
 }

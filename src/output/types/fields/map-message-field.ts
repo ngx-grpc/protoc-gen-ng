@@ -12,6 +12,7 @@ export class MapMessageField implements MessageField {
 
   private attributeName: string;
   private dataType: string;
+  private interfaceDataType: string;
   private keyField: ProtoMessageField;
   private valueField: ProtoMessageField;
   private mapMessageClassName: string;
@@ -25,6 +26,7 @@ export class MapMessageField implements MessageField {
     this.attributeName = camelizeSafe(this.messageField.name);
     [this.keyField, this.valueField] = getMapKeyValueFields(this.proto, this.messageField);
     this.dataType = getDataType(this.proto, this.messageField);
+    this.interfaceDataType = getDataType(this.proto, this.messageField, true);
     this.mapMessageClassName = this.proto.getRelativeTypeName(this.messageField.typeName);
   }
 
@@ -94,4 +96,7 @@ export class MapMessageField implements MessageField {
     printer.add(`${this.attributeName}: {...(this.${this.attributeName} || {})},`);
   }
 
+  printMessageInterfaceField(printer: Printer) {
+    printer.add(`${this.attributeName}?: ${this.interfaceDataType};`);
+  }
 }

@@ -90,4 +90,8 @@ export class BooleanMessageField implements MessageField {
     }
   }
 
+  printMessageInterfaceField(printer: Printer): void {
+    printer.add(`${this.attributeName}?: ${this.dataType};`);
+  }
+
 }

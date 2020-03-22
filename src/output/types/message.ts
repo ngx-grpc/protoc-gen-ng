@@ -75,7 +75,9 @@ export class Message {
       ExternalDependencies.RecursivePartial,
     );
 
-    printer.addLine(`export class ${this.message.name} implements GrpcMessage {
+    this.printMessageInterface(printer);
+
+    printer.addLine(`export class ${this.message.name} implements GrpcMessage<I${this.message.name}> {
 
       static toBinary(instance: ${this.message.name}) {
         const writer = new BinaryWriter();
@@ -124,7 +126,7 @@ export class Message {
 
     this.printToObject(printer);
 
-    printer.addLine('toJSON() { return this.toObject(); }');
+    printer.addLine(`toJSON(): I${this.message.name} { return this.toObject(); }`);
 
     if (this.message.name === 'Timestamp' && this.proto.pb_package === 'google.protobuf') {
       this.printTimestampMemberMethods(printer);
@@ -207,14 +209,25 @@ export class Message {
   }
 
   private printToObject(printer: Printer) {
-    printer.addLine('toObject() {');
+    printer.addLine(`toObject(): I${this.message.name} {`);
     printer.addLine('return {');
     this.messageFields.forEach(f => {
       f.printToObjectMapping(printer);
       printer.newLine();
     });
-    printer.addLine('};');
+    printer.addLine(`} as I${this.message.name};`);
     printer.addLine('}');
+  }
+
+  private printMessageInterface(printer: Printer) {
+    printer.newLine();
+    printer.addLine(`export interface I${this.message.name} {`);
+    this.messageFields.forEach(f => {
+      f.printMessageInterfaceField(printer);
+      printer.newLine();
+    });
+    printer.addLine('}');
+    printer.newLine();
   }
 
   private printSubTypes(printer: Printer) {

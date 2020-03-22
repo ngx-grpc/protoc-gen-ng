@@ -9,6 +9,7 @@ export class Dependency {
 
 const angularCore = {
   Inject: new Dependency('@angular/core', 'Inject'),
+  Optional: new Dependency('@angular/core', 'Optional'),
   Injectable: new Dependency('@angular/core', 'Injectable'),
   InjectionToken: new Dependency('@angular/core', 'InjectionToken'),
 };
@@ -18,6 +19,7 @@ const ngxGrpcCommon = {
   GrpcClient: new Dependency('@ngx-grpc/common', 'GrpcClient'),
   GrpcClientFactory: new Dependency('@ngx-grpc/common', 'GrpcClientFactory'),
   GrpcClientSettings: new Dependency('@ngx-grpc/common', 'GrpcClientSettings'),
+  GrpcClientDefaultSettings: new Dependency('@ngx-grpc/common', 'GRPC_SERVICE_DEFAULT_SETTINGS'),
   GrpcMessage: new Dependency('@ngx-grpc/common', 'GrpcMessage'),
   RecursivePartial: new Dependency('@ngx-grpc/common', 'RecursivePartial'),
   GrpcEvent: new Dependency('@ngx-grpc/common', 'GrpcEvent'),
