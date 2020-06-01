@@ -1,5 +1,5 @@
 import 'jest';
-import * as struct from '../out/struct.pb';
+import * as struct from '../out/google/protobuf/struct.pb';
 import * as structGoogle from 'google-protobuf/google/protobuf/struct_pb';
 
 describe('struct.proto', () => {
@@ -23,28 +23,28 @@ describe('struct.proto', () => {
     expect(msg.fields?.someBool.boolValue).toEqual(true);
 
     const msgWebGrpc = structGoogle.Struct.deserializeBinary(
-      struct.Struct.toBinary(msg)
+      struct.Struct.toBinary(msg),
     );
 
     expect(
       msgWebGrpc
         .getFieldsMap()
         .get('someDouble')
-        ?.getNumberValue()
+        ?.getNumberValue(),
     ).toEqual(3);
 
     expect(
       msgWebGrpc
         .getFieldsMap()
         .get('someString')
-        ?.getStringValue()
+        ?.getStringValue(),
     ).toEqual('someStringValue');
 
     expect(
       msgWebGrpc
         .getFieldsMap()
         .get('someBool')
-        ?.getBoolValue()
+        ?.getBoolValue(),
     ).toEqual(true);
 
     // finally, use the convenience method provided by google's supplied struct_pb
@@ -82,28 +82,28 @@ describe('struct.proto', () => {
     expect(msg.fields?.someBool.boolValue).toEqual(false);
 
     const msgWebGrpc = structGoogle.Struct.deserializeBinary(
-      struct.Struct.toBinary(msg)
+      struct.Struct.toBinary(msg),
     );
 
     expect(
       msgWebGrpc
         .getFieldsMap()
         .get('someDouble')
-        ?.getNumberValue()
+        ?.getNumberValue(),
     ).toEqual(0);
 
     expect(
       msgWebGrpc
         .getFieldsMap()
         .get('someString')
-        ?.getStringValue()
+        ?.getStringValue(),
     ).toEqual('');
 
     expect(
       msgWebGrpc
         .getFieldsMap()
         .get('someBool')
-        ?.getBoolValue()
+        ?.getBoolValue(),
     ).toEqual(false);
 
     // finally, use the convenience method provided by google's supplied struct_pb

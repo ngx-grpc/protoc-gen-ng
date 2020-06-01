@@ -42,7 +42,7 @@ describe('data-types.proto', () => {
     expect(msg.double).toBe(0);
     expect(msg.float).toBe(0);
     expect(
-      msg.bytes instanceof Uint8Array && msg.bytes.length === 0
+      msg.bytes instanceof Uint8Array && msg.bytes.length === 0,
     ).toBeTruthy();
     expect(msg.int64).toBe('0');
     expect(msg.enum).toBe(0);
@@ -144,7 +144,7 @@ describe('data-types.proto', () => {
     });
 
     const msgWebGrpc = dataTypesWebGrpc.TestMessage.deserializeBinary(
-      dataTypes.TestMessage.toBinary(msg)
+      dataTypes.TestMessage.toBinary(msg),
     );
     expect(msgWebGrpc.getString()).toEqual('someString');
     expect(msgWebGrpc.getInt32()).toEqual(32);
@@ -158,7 +158,7 @@ describe('data-types.proto', () => {
     expect(msgWebGrpc.getFixed32()).toEqual(32);
     expect(msgWebGrpc.getFixed64()).toEqual(64);
     expect(msgWebGrpc.getMapStringStringMap().get('stringKey')).toEqual(
-      'stringValue'
+      'stringValue',
     );
     console.log(msgWebGrpc.toObject());
     expect(
@@ -166,7 +166,7 @@ describe('data-types.proto', () => {
         .getMapInt64SubMap()
         // TODO: investigate and fix int64 map key serialization
         .get(0)
-        ?.getString()
+        ?.getString(),
     ).toEqual('someSubString');
     expect(msgWebGrpc.getMapBoolStringMap().get(true)).toEqual('true');
   });
@@ -182,7 +182,7 @@ describe('data-types.proto', () => {
       msgWebGrpc
         .getMapInt64SubMap()
         .get(64)
-        ?.getString()
+        ?.getString(),
     ).toEqual(testString);
   });
 });
