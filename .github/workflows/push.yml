@@ -17,7 +17,7 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v1
       - name: Install protoc
-        uses: Arduino/actions/setup-protoc@master
+        uses: arduino/setup-protoc@master
       - name: Install dependencies
         run: npm ci
       - name: Build
