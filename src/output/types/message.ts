@@ -11,7 +11,7 @@ import { EnumMessageField } from './fields/enum-message-field';
 import { MapMessageField } from './fields/map-message-field';
 import { MessageMessageField } from './fields/message-message-field';
 import { NumberMessageField } from './fields/number-message-field';
-import { Int64MessageField as Number64MessageField } from './fields/number64-message-field';
+import { Number64MessageField as Number64MessageField } from './fields/number64-message-field';
 import { StringMessageField } from './fields/string-message-field';
 import { JSDoc } from './js-doc';
 import { MessageField } from './message-field';

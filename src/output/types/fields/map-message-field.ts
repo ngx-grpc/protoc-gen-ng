@@ -7,6 +7,7 @@ import { getDataType, getMapKeyValueFields } from '../../misc/helpers';
 import { Printer } from '../../misc/printer';
 import { MessageField } from '../message-field';
 import { OneOf } from '../oneof';
+import { Number64MessageField } from './number64-message-field';
 
 export class MapMessageField implements MessageField {
 
@@ -45,9 +46,9 @@ export class MapMessageField implements MessageField {
     const varName = `instance.${this.attributeName}`;
     const keysVarName = `keys_${this.messageField.number}`;
     const repeatedVarName = `repeated_${this.messageField.number}`;
-    const castedKey = this.keyField.type === ProtoMessageFieldType.string ? 'key' : 'Number(key)';
+    const isStringKey = ProtoMessageFieldType.string || Number64MessageField.isNumber64Field(this.keyField);
+    const castedKey = this.keyField.type === isStringKey ? 'key' : 'Number(key)';
 
-    // TODO add key filter for NaN for number fields and 0-1 for boolean fields
     printer.add(`if (!!${varName}) {
       const ${keysVarName} = Object.keys(${varName} as any);
 

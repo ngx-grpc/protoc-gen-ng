@@ -10,6 +10,20 @@ import { OneOf } from '../oneof';
 
 export class NumberMessageField implements MessageField {
 
+  static isNumberField(field: ProtoMessageField) {
+    const numberTypes = [
+      ProtoMessageFieldType.double,
+      ProtoMessageFieldType.fixed32,
+      ProtoMessageFieldType.float,
+      ProtoMessageFieldType.int32,
+      ProtoMessageFieldType.sfixed32,
+      ProtoMessageFieldType.sint32,
+      ProtoMessageFieldType.uint32,
+    ];
+
+    return numberTypes.includes(field.type);
+  }
+
   private attributeName: string;
   private dataType: string;
   private protoDataType: string; // used in reader and writer as part of the method call

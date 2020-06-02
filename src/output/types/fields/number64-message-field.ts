@@ -8,7 +8,19 @@ import { Printer } from '../../misc/printer';
 import { MessageField } from '../message-field';
 import { OneOf } from '../oneof';
 
-export class Int64MessageField implements MessageField {
+export class Number64MessageField implements MessageField {
+
+  static isNumber64Field(field: ProtoMessageField) {
+    const number64Types = [
+      ProtoMessageFieldType.fixed64,
+      ProtoMessageFieldType.int64,
+      ProtoMessageFieldType.sfixed64,
+      ProtoMessageFieldType.sint64,
+      ProtoMessageFieldType.uint64,
+    ];
+
+    return number64Types.includes(field.type);
+  }
 
   private attributeName: string;
   private dataType: string;
