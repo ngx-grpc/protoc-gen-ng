@@ -42,6 +42,10 @@ export class StringMessageField implements MessageField {
       printer.add(`if (instance.${this.attributeName} && instance.${this.attributeName}.length) {
         writer.writeRepeatedString(${this.messageField.number}, instance.${this.attributeName});
       }`);
+    } else if (this.oneOf) {
+      printer.add(`if (instance.${this.attributeName} || instance.${this.attributeName} === '') {
+        writer.writeString(${this.messageField.number}, instance.${this.attributeName});
+      }`);
     } else {
       printer.add(`if (instance.${this.attributeName}) {
         writer.writeString(${this.messageField.number}, instance.${this.attributeName});

@@ -42,6 +42,10 @@ export class BooleanMessageField implements MessageField {
       printer.add(`if (instance.${this.attributeName} && instance.${this.attributeName}.length) {
         writer.writeRepeatedBool(${this.messageField.number}, instance.${this.attributeName});
       }`);
+    } else if (this.oneOf) {
+      printer.add(`if (instance.${this.attributeName} || instance.${this.attributeName} === false) {
+        writer.writeBool(${this.messageField.number}, instance.${this.attributeName});
+      }`);
     } else {
       printer.add(`if (instance.${this.attributeName}) {
         writer.writeBool(${this.messageField.number}, instance.${this.attributeName});
