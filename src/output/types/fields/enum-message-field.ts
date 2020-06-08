@@ -42,6 +42,10 @@ export class EnumMessageField implements MessageField {
       printer.add(`if (instance.${this.attributeName} && instance.${this.attributeName}.length) {
         writer.writeRepeatedEnum(${this.messageField.number}, instance.${this.attributeName});
       }`);
+    } else if (this.oneOf) {
+      printer.add(`if (instance.${this.attributeName} || instance.${this.attributeName} === 0) {
+        writer.writeEnum(${this.messageField.number}, instance.${this.attributeName});
+      }`);
     } else {
       printer.add(`if (instance.${this.attributeName}) {
         writer.writeEnum(${this.messageField.number}, instance.${this.attributeName});

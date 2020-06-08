@@ -17,9 +17,9 @@
     "url": "https://github.com/ngx-grpc/protoc-gen-ng"
   },
   "scripts": {
-    "start": "nodemon --watch src --watch test/proto -e ts,proto --exec 'npm run build && npm run test:generate && echo \"Done\"'",
+    "start": "nodemon --watch src --watch test/proto -e ts,proto --exec 'npm run build && npm run test:generate && npm run test:generate-grpc-web && echo \"Done\"'",
     "build": "rimraf dist && tsc -p tsconfig.build.json && chmod +x dist/main.js",
-    "lint": "eslint src/**/*.ts",
+    "lint": "eslint src/**/*.ts && eslint test/**/*.ts",
     "test": "jest",
     "test:watch": "jest --watchAll",
     "test:coverage": "jest --coverage",

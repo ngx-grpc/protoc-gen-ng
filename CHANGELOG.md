@@ -1,3 +1,18 @@
+## [0.6.3](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.6.2...v0.6.3) (2020-06-03)
+
+
+### Bug Fixes
+
+* make sure that oneOf fields serialize trivial scalar values too ([e341220](https://github.com/ngx-grpc/protoc-gen-ng/commit/e341220fe6175a2e2b83b942135e9a89ee0502f0))
+
+## [0.6.2](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.6.1...v0.6.2) (2020-06-02)
+
+
+### Bug Fixes
+
+* handle maps number64 keys as string ([ab10943](https://github.com/ngx-grpc/protoc-gen-ng/commit/ab10943b94723dd0f11fdbec51244bdd0f9c7e75))
+* update deps ([7729647](https://github.com/ngx-grpc/protoc-gen-ng/commit/77296470a41e6f0faf631601c7bf9326b7c6eef4))
+
 ## [0.6.1](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.6.0...v0.6.1) (2020-02-27)
 
 
