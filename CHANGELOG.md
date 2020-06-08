@@ -1,3 +1,10 @@
+## [0.6.4](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.6.3...v0.6.4) (2020-06-08)
+
+
+### Features
+
+* mark client config as optional to allow global configuration ([5720c54](https://github.com/ngx-grpc/protoc-gen-ng/commit/5720c54bab01b02eb62afa08ce9e37e71c56a42e))
+
 ## [0.6.3](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.6.2...v0.6.3) (2020-06-03)
 
 
