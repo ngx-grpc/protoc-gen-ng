@@ -11,6 +11,7 @@ const angularCore = {
   Inject: new Dependency('@angular/core', 'Inject'),
   Injectable: new Dependency('@angular/core', 'Injectable'),
   InjectionToken: new Dependency('@angular/core', 'InjectionToken'),
+  Optional: new Dependency('@angular/core', 'Optional'),
 };
 
 const ngxGrpcCommon = {

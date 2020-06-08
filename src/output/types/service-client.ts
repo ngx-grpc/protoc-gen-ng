@@ -22,6 +22,7 @@ export class ServiceClient {
       ExternalDependencies.GrpcHandler,
       ExternalDependencies.Inject,
       ExternalDependencies.Injectable,
+      ExternalDependencies.Optional,
       ExternalDependencies.GrpcClientFactory,
       ExternalDependencies.GRPC_CLIENT_FACTORY,
     );
@@ -37,7 +38,7 @@ export class ServiceClient {
         private client: GrpcClient;
 
         constructor(
-          @Inject(${tokenName}) settings: GrpcClientSettings,
+          @Optional() @Inject(${tokenName}) settings: GrpcClientSettings,
           @Inject(GRPC_CLIENT_FACTORY) clientFactory: GrpcClientFactory,
           private handler: GrpcHandler,
         ) {
