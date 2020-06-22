@@ -104,7 +104,7 @@ export class Proto {
 
   getRelativeTypeName(pbType: string, thisProtoPackageName = '') {
     const meta = this.resolveTypeMetadata(pbType);
-    const [, , /* packageName */, typeName] = pbType.match(/^\.(([a-z0-9.]*)\.)?([A-Za-z0-9.]+$)/) as RegExpMatchArray;
+    const [, , /* packageName */, typeName] = pbType.match(/^\.(([a-z0-9._]*)\.)?([A-Za-z0-9._]+$)/) as RegExpMatchArray;
 
     if (meta.proto === this) {
       return (thisProtoPackageName ? thisProtoPackageName + '.' : '') + typeName;
