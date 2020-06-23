@@ -1,3 +1,10 @@
+## [0.6.5](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.6.4...v0.6.5) (2020-06-23)
+
+
+### Bug Fixes
+
+* handle underscores in package and file names, also include test proto that would fail to compile if underscores were not matched by the regex ([d367a91](https://github.com/ngx-grpc/protoc-gen-ng/commit/d367a91df6419aa42d96c20435750b18af6d6faa))
+
 ## [0.6.4](https://github.com/ngx-grpc/protoc-gen-ng/compare/v0.6.3...v0.6.4) (2020-06-08)
 
 
